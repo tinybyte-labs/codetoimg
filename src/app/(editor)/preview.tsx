@@ -1,34 +1,27 @@
 "use client";
 
-import CodeBlock from "@/components/code-block";
-import { exmapleCodes } from "@/data/example-codes";
-import { codeAtom } from "@/lib/atoms/code";
-import { languageAtom } from "@/lib/atoms/editor";
-import { randomInt } from "@/lib/utils";
-import { useSetAtom } from "jotai";
-import { Loader2 } from "lucide-react";
+import Canvas from "@/components/canvas";
+import { Settings, settingsAtom } from "@/lib/atoms/settings";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
-export default function Preview() {
+export default function Preview({ initState }: { initState: Settings }) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const setLanguage = useSetAtom(languageAtom);
-  const setCode = useSetAtom(codeAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
 
   useEffect(() => {
     if (isLoaded) return;
-    const exmaple = exmapleCodes[randomInt(0, exmapleCodes.length)];
-    setLanguage(exmaple.lang);
-    setCode(exmaple.code.trim());
+    setSettings(initState);
     setIsLoaded(true);
-  }, [isLoaded, setCode, setLanguage]);
+  }, [initState, isLoaded, setSettings]);
 
   if (!isLoaded) {
-    return <Loader2 size={24} className="animate-spin" />;
+    return null;
   }
 
   return (
     <div className="transparent-grid relative h-fit w-fit">
-      <CodeBlock />
+      <Canvas onChange={setSettings} value={settings} />
     </div>
   );
 }

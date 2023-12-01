@@ -35,6 +35,7 @@
     "@uiw/react-codemirror": "^4.21.21",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "deepmerge": "^4.3.1",
     "html-to-image": "^1.11.11",
     "jotai": "^2.6.0",
     "jotai-optics": "^0.3.1",

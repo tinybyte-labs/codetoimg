@@ -14,55 +14,131 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { GRADIENTS } from "@/data/gradients";
 import {
-  backgroundAtom,
   backgroundBlurAtom,
   borderRadiusAtom,
-  editorAtom,
+  settingsAtom,
   fontSizeAtom,
-  initEditorState,
+  initSettings,
   isExportingAtom,
   languageAtom,
   paddingAtom,
-  shadowAtom,
   showLineNumbersAtom,
   showTitleBarAtom,
   showTraficLightsAtom,
   themeAtom,
-} from "@/lib/atoms/editor";
-import { titleAtom } from "@/lib/atoms/title";
+} from "@/lib/atoms/settings";
 import { themes } from "@/data/themes";
-import { cn, downloadHtmlElement } from "@/lib/utils";
-import { LanguageName, langNames } from "@uiw/codemirror-extensions-langs";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { Download, Loader2 } from "lucide-react";
+import {
+  cn,
+  copyNodeAsImage,
+  downloadHtmlElement,
+  objectDiff,
+} from "@/lib/utils";
+import { LanguageName } from "@uiw/codemirror-extensions-langs";
+import { useAtom } from "jotai";
+import {
+  CodeIcon,
+  Copy,
+  Download,
+  ImageIcon,
+  LinkIcon,
+  Loader2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { COLORS } from "@/data/colors";
 import { languageNames } from "@/data/language-names";
-import { SheetClose } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export default function SideBar() {
-  const setEditor = useSetAtom(editorAtom);
-  const title = useAtomValue(titleAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
   const [fontSize, setFontSize] = useAtom(fontSizeAtom);
   const [backgroundBlur, setBackgroundBlur] = useAtom(backgroundBlurAtom);
   const [showTitleBar, setShowTitleBar] = useAtom(showTitleBarAtom);
   const [showTraficLights, setShowTraficLights] = useAtom(showTraficLightsAtom);
   const [showLineNumbers, setShowLineNumbers] = useAtom(showLineNumbersAtom);
-  const [shadow, setShadow] = useAtom(shadowAtom);
   const [borderRadius, setBorderRadius] = useAtom(borderRadiusAtom);
   const [padding, setPadding] = useAtom(paddingAtom);
   const [language, setLanguage] = useAtom(languageAtom);
   const [theme, setTheme] = useAtom(themeAtom);
-  const [background, setBackground] = useAtom(backgroundAtom);
   const [isExporting, setIsExporting] = useAtom(isExportingAtom);
+  const { toast } = useToast();
+  const [exportFormat, setExportFormat] = useState<"png" | "jpeg" | "svg">(
+    "png",
+  );
+  const [exportScale, setExportSclae] = useState<number>(2);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [filename, setFilename] = useState("codetoimg");
 
   const handleReset = useCallback(() => {
-    setEditor(initEditorState);
-  }, [setEditor]);
+    setSettings(initSettings);
+  }, [setSettings]);
+
+  const copyEmbeding = useCallback(() => {
+    const canvas = document.getElementById("canvas");
+    const changes = objectDiff(settings, initSettings);
+    const params = new URLSearchParams(changes);
+    const src = `${window.location.origin}/embed?${params.toString()}`;
+    navigator.clipboard.writeText(
+      `<iframe src="${src}" style="width: ${
+        canvas?.clientWidth ?? 0
+      }px; height: ${
+        canvas?.clientHeight ?? 0
+      }px; border:0; transform: scale(1); overflow:hidden;" sandbox="allow-scripts allow-same-origin"></iframe>`,
+    );
+    toast({ title: "Copied!" });
+  }, [settings, toast]);
+
+  const copyPlanImage = useCallback(async () => {
+    if (isExporting) return;
+
+    const canvas = document.getElementById("canvas");
+    if (canvas) {
+      setIsExporting(true);
+      try {
+        await copyNodeAsImage(canvas);
+        toast({ title: "Copied!" });
+      } catch (err: any) {
+        toast({
+          title: "Faield to copy",
+          description: err.message || "Something went wrong!",
+          variant: "destructive",
+        });
+      } finally {
+        setIsExporting(false);
+      }
+    }
+  }, [isExporting, setIsExporting, toast]);
+
+  const copyPlanUrl = useCallback(() => {
+    const changes = objectDiff(settings, initSettings);
+    const params = new URLSearchParams(changes);
+    const url = `${window.location.origin}/?${params.toString()}`;
+    navigator.clipboard.writeText(url);
+    toast({ title: "Copied!" });
+  }, [settings, toast]);
 
   const hadnleExport = useCallback(async () => {
     if (isExporting) return;
@@ -71,17 +147,18 @@ export default function SideBar() {
       setIsExporting(true);
       try {
         await downloadHtmlElement(canvas, {
-          format: ".png",
-          scale: 3,
-          title: title || "image",
+          format: exportFormat,
+          scale: exportScale,
+          title: filename || "codetoimg",
         });
+        setExportDialogOpen(false);
       } catch (err: any) {
         console.error(err);
       } finally {
         setIsExporting(false);
       }
     }
-  }, [title, isExporting, setIsExporting]);
+  }, [exportFormat, exportScale, filename, isExporting, setIsExporting]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -104,7 +181,7 @@ export default function SideBar() {
       <ScrollArea className="flex-1">
         <div className="space-y-6 py-4">
           <fieldset>
-            <Tabs defaultValue={background?.type || "gradient"}>
+            <Tabs defaultValue="gradient">
               <div className="space-y-1 px-4">
                 <Label>Background</Label>
                 <TabsList className="w-full">
@@ -168,13 +245,18 @@ export default function SideBar() {
           <fieldset className="space-y-1 px-4">
             <div className="flex items-center justify-between">
               <Label htmlFor="shadow-opacity">Shadow</Label>
-              <p className="text-sm text-muted-foreground">{shadow.opacity}</p>
+              <p className="text-sm text-muted-foreground">
+                {settings.shadowOpacity}
+              </p>
             </div>
             <Slider
               id="shadow-opacity"
-              value={[shadow.opacity]}
+              value={[settings.shadowOpacity]}
               onValueChange={(values) => {
-                setShadow((shadow) => ({ ...shadow, opacity: values[0] }));
+                setSettings((settings) => ({
+                  ...settings,
+                  shadowOpacity: values[0],
+                }));
               }}
               min={0}
               max={1}
@@ -281,26 +363,106 @@ export default function SideBar() {
         <ScrollBar orientation="vertical" />
       </ScrollArea>
 
-      <div className="flex items-center gap-4 border-t p-4">
-        <Button
-          className="flex-1"
-          disabled={isExporting}
-          onClick={hadnleExport}
-        >
-          {isExporting ? (
-            <Loader2 size={20} className="animate-spin" />
-          ) : (
-            <>
+      <div className="flex items-center gap-2 border-t p-4">
+        <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex-1">
               Export
-              <Download size={20} className="ml-2" />
-            </>
-          )}
-        </Button>
-        <Button
-          variant="secondary"
-          disabled={isExporting}
-          onClick={handleReset}
-        >
+              <Download size={20} className="-mr-1 ml-2" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Export</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <fieldset className="space-y-2">
+                <Label htmlFor="filename">Filename</Label>
+                <Input
+                  id="filename"
+                  value={filename}
+                  onChange={(e) => {
+                    setFilename(e.currentTarget.value);
+                  }}
+                  placeholder="codetoimg"
+                />
+              </fieldset>
+              <fieldset className="space-y-2">
+                <Label htmlFor="export-format">Format</Label>
+                <Select
+                  value={exportFormat}
+                  onValueChange={(value) => setExportFormat(value as any)}
+                >
+                  <SelectTrigger id="export-format">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="png">PNG</SelectItem>
+                    <SelectItem value="jpeg">JPEG</SelectItem>
+                    <SelectItem value="svg">SVG</SelectItem>
+                  </SelectContent>
+                </Select>
+              </fieldset>
+              {exportFormat !== "svg" && (
+                <fieldset className="space-y-2">
+                  <Label htmlFor="export-scale">Scale</Label>
+                  <Select
+                    value={String(exportScale)}
+                    onValueChange={(value) => setExportSclae(Number(value))}
+                  >
+                    <SelectTrigger id="export-scale">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1x</SelectItem>
+                      <SelectItem value="2">2x</SelectItem>
+                      <SelectItem value="3">3x</SelectItem>
+                      <SelectItem value="4">4x</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </fieldset>
+              )}
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="secondary">Cancel</Button>
+              </DialogClose>
+              <Button onClick={hadnleExport} disabled={isExporting}>
+                {isExporting && (
+                  <Loader2 size={18} className="-ml-1 mr-2 animate-spin" />
+                )}
+                Export
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon">
+              <p className="sr-only">Copy</p>
+              <Copy size={20} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Copy to Clipboard</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={copyPlanImage}>
+                <ImageIcon size={18} className="mr-2" />
+                Image
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={copyPlanUrl}>
+                <LinkIcon size={18} className="mr-2" />
+                URL
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={copyEmbeding}>
+                <CodeIcon size={18} className="mr-2" />
+                Embeding
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button variant="secondary" onClick={handleReset}>
           Reset
         </Button>
       </div>
@@ -309,7 +471,7 @@ export default function SideBar() {
 }
 
 const ColorPicker = () => {
-  const [background, setBackground] = useAtom(backgroundAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
 
   return (
     <ScrollArea className="w-80">
@@ -317,12 +479,18 @@ const ColorPicker = () => {
         {COLORS.map((color, i) => (
           <button
             key={i}
-            onClick={() => setBackground({ type: "color", color })}
+            onClick={() =>
+              setSettings((settings) => ({
+                ...settings,
+                backgroundColor: color,
+                backgroundImage: undefined,
+              }))
+            }
             className={cn(
               "relative h-14 w-14 overflow-hidden rounded-xl border",
               {
                 "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                  background?.type === "color" && background.color === color,
+                  settings.backgroundColor === color,
               },
             )}
           >
@@ -343,22 +511,26 @@ const ColorPicker = () => {
 };
 
 const GradientPicker = () => {
-  const [background, setBackground] = useAtom(backgroundAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
   return (
     <ScrollArea className="w-80">
       <div className="grid w-fit grid-flow-col grid-rows-2 gap-2 p-4">
         {GRADIENTS.map((gradient, i) => (
           <button
             key={i}
-            onClick={() => setBackground(gradient)}
+            onClick={() =>
+              setSettings((settings) => ({
+                ...settings,
+                backgroundColor: undefined,
+                backgroundImage: gradient,
+              }))
+            }
             style={{
-              backgroundColor: gradient.color,
-              backgroundImage: gradient.image,
+              backgroundImage: gradient,
             }}
             className={cn("h-14 w-14 rounded-xl border", {
               "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                background?.type === "gradient" &&
-                background.image === gradient.image,
+                settings.backgroundImage === gradient,
             })}
           />
         ))}
@@ -384,7 +556,8 @@ const IMAGES = [
 ];
 
 const ImagePicker = () => {
-  const [background, setBackground] = useAtom(backgroundAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
+
   return (
     <ScrollArea className="w-80 whitespace-nowrap">
       <div className="flex gap-4 whitespace-nowrap p-4">
@@ -392,17 +565,17 @@ const ImagePicker = () => {
           <button
             key={i}
             onClick={() =>
-              setBackground({
-                type: "image",
-                url: imageUrl,
-                scale: background?.type === "image" ? background.scale : 100,
-              })
+              setSettings((settings) => ({
+                ...settings,
+                backgroundColor: undefined,
+                backgroundImage: `url(${imageUrl})`,
+              }))
             }
             className={cn(
               "h-[120px] w-[180px] overflow-hidden rounded-xl border",
               {
                 "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                  background?.type === "image" && background.url === imageUrl,
+                  settings.backgroundImage === `url(${imageUrl})`,
               },
             )}
           >

@@ -21,14 +21,6 @@ export default function Footer() {
       >
         Source Code
       </Link>
-      {" • "}
-      <Link
-        href="https://tinybytelabs.com/contact"
-        target="_blank"
-        className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
-      >
-        Contact Developer
-      </Link>
     </footer>
   );
 }

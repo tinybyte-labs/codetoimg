@@ -2,33 +2,32 @@ import CodeMirror, { BasicSetupOptions } from "@uiw/react-codemirror";
 import { useEffect, useMemo, useState } from "react";
 import { Extension } from "@codemirror/state";
 import { color } from "@uiw/codemirror-extensions-color";
-import { langs } from "@uiw/codemirror-extensions-langs";
+import { LanguageName, langs } from "@uiw/codemirror-extensions-langs";
 import { EditorView } from "@codemirror/view";
-
 import { createTheme } from "@uiw/codemirror-themes";
-import { useAtom, useAtomValue } from "jotai";
 import { themes } from "@/data/themes";
-import {
-  fontSizeAtom,
-  languageAtom,
-  showLineNumbersAtom,
-  themeAtom,
-} from "@/lib/atoms/editor";
-import { codeAtom } from "@/lib/atoms/code";
 
 const baseExtensions: Extension = [];
 
 export default function CodeEditor({
   onEditorCreated,
+  value,
+  onChange,
+  readOnly,
+  showLineNumbers = true,
+  fontSize = 16,
+  language = "javascript",
+  theme = "vscode",
 }: {
   onEditorCreated?: (view: EditorView) => void;
+  theme?: string;
+  language?: LanguageName;
+  showLineNumbers?: boolean;
+  fontSize?: number;
+  value?: string;
+  onChange?: (code: string) => void;
+  readOnly?: boolean;
 }) {
-  const themeKey = useAtomValue(themeAtom);
-  const language = useAtomValue(languageAtom);
-  const showLineNumbers = useAtomValue(showLineNumbersAtom);
-  const fontSize = useAtomValue(fontSizeAtom);
-  const [code, setCode] = useAtom(codeAtom);
-
   const [extensions, setExtensions] = useState<Extension[]>();
   const basicSetup = useMemo(
     () =>
@@ -51,8 +50,8 @@ export default function CodeEditor({
     [showLineNumbers],
   );
 
-  const theme = useMemo(() => {
-    const options = themes[themeKey]?.options;
+  const t = useMemo(() => {
+    const options = themes[theme]?.options;
     if (options) {
       return createTheme({
         ...options,
@@ -65,18 +64,23 @@ export default function CodeEditor({
       });
     }
     return undefined;
-  }, [themeKey]);
+  }, [theme]);
 
   useEffect(() => {
-    setExtensions([baseExtensions, color, langs[language]()]);
-  }, [language]);
+    setExtensions([
+      baseExtensions,
+      color,
+      langs[language](),
+      EditorView.editable.of(!readOnly),
+    ]);
+  }, [language, readOnly]);
 
   return (
     <CodeMirror
-      value={code}
-      onChange={(value) => setCode(value)}
+      value={value}
+      onChange={onChange}
       extensions={extensions}
-      theme={theme}
+      theme={t}
       basicSetup={basicSetup}
       onCreateEditor={onEditorCreated}
       style={{ fontSize }}
