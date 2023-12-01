@@ -54,7 +54,7 @@ export const initEditorState: EditorState = {
   padding: 64,
   borderRadius: 16,
   fontSize: 16,
-  showTitleBar: false,
+  showTitleBar: true,
   showTraficLights: true,
   shadow: {
     opacity: 0.5,

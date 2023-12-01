@@ -94,7 +94,6 @@ export default function CodeBlock() {
                 onChange={(e) => {
                   setTitle(e.currentTarget.value);
                 }}
-                placeholder="Untitled"
               />
             </div>
           </div>
