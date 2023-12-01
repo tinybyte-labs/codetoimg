@@ -124,6 +124,9 @@ dependencies:
     version: 3.22.4
 
 devDependencies:
+  '@types/gtag.js':
+    specifier: ^0.0.18
+    version: 0.0.18
   '@types/node':
     specifier: ^20
     version: 20.10.1
@@ -1832,6 +1835,10 @@ packages:
     dependencies:
       tslib: 2.6.2
     dev: false
+
+  /@types/gtag.js@0.0.18:
+    resolution: {integrity: sha512-GJxnIvuXuVhKaHfsOdzGipoOoXq72y3mdcncc9h6i6E7nlz89zBEj2wrLM7bqO5Xk9Lm2B94MwdQsSwRlaPSWw==}
+    dev: true
 
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}

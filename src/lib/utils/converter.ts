@@ -4,7 +4,7 @@ import { Options } from "html-to-image/lib/types";
 export type ExportSettings = {
   scale: number;
   format: "png" | "jpeg" | "svg";
-  title?: string;
+  filename?: string;
 };
 
 const filter = (node: HTMLElement) => {
@@ -47,8 +47,8 @@ export const downloadHtmlElement = async (
 
   const date = new Date(Date.now());
   let title =
-    settings.title && settings.title.length
-      ? settings.title
+    settings.filename && settings.filename.length
+      ? settings.filename
       : `untitled-${Math.floor(date.getTime() / 1000)}`;
 
   if (imgUrl) {

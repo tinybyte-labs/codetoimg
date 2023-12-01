@@ -3,6 +3,7 @@
 import CodeEditor from "@/components/code-editor";
 import { themes } from "@/data/themes";
 import { Settings } from "@/lib/atoms/settings";
+import { logEvent } from "@/lib/gtag";
 import { cn } from "@/lib/utils";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
@@ -19,13 +20,14 @@ export default function Canvas({
   readOnly?: boolean;
   showCopyIcon?: boolean;
 }) {
-  const theme = useMemo(() => themes[value.theme], [value.theme]);
   const [copied, setCopied] = useState(false);
+  const theme = useMemo(() => themes[value.theme], [value.theme]);
 
   const copyCode = useCallback(() => {
     if (copied) return;
     navigator.clipboard.writeText(value.code);
     setCopied(true);
+    logEvent("copy_code", { code: value.code });
     setTimeout(() => {
       setCopied(false);
     }, 1000);

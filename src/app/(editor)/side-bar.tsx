@@ -29,6 +29,7 @@ import {
 } from "@/lib/atoms/settings";
 import { themes } from "@/data/themes";
 import {
+  ExportSettings,
   cn,
   copyNodeAsImage,
   downloadHtmlElement,
@@ -71,9 +72,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { logEvent } from "@/lib/gtag";
 
 export default function SideBar() {
-  const [settings, setSettings] = useAtom(settingsAtom);
+  const [state, setSettings] = useAtom(settingsAtom);
   const [fontSize, setFontSize] = useAtom(fontSizeAtom);
   const [backgroundBlur, setBackgroundBlur] = useAtom(backgroundBlurAtom);
   const [showTitleBar, setShowTitleBar] = useAtom(showTitleBarAtom);
@@ -94,11 +96,12 @@ export default function SideBar() {
 
   const handleReset = useCallback(() => {
     setSettings(initSettings);
+    logEvent("reset_state");
   }, [setSettings]);
 
-  const copyEmbeding = useCallback(() => {
+  const copyEmbeding = useCallback(async () => {
     const canvas = document.getElementById("canvas");
-    const changes = objectDiff(settings, initSettings);
+    const changes = objectDiff(state, initSettings);
     const params = new URLSearchParams(changes);
     const src = `${window.location.origin}/embed?${params.toString()}`;
     navigator.clipboard.writeText(
@@ -108,8 +111,11 @@ export default function SideBar() {
         canvas?.clientHeight ?? 0
       }px; border:0; transform: scale(1); overflow:hidden;" sandbox="allow-scripts allow-same-origin"></iframe>`,
     );
+    logEvent("copy_embeding", {
+      state,
+    });
     toast({ title: "Copied!" });
-  }, [settings, toast]);
+  }, [state, toast]);
 
   const copyPlanImage = useCallback(async () => {
     if (isExporting) return;
@@ -119,6 +125,9 @@ export default function SideBar() {
       setIsExporting(true);
       try {
         await copyNodeAsImage(canvas);
+        logEvent("copy_image", {
+          state,
+        });
         toast({ title: "Copied!" });
       } catch (err: any) {
         toast({
@@ -130,15 +139,18 @@ export default function SideBar() {
         setIsExporting(false);
       }
     }
-  }, [isExporting, setIsExporting, toast]);
+  }, [isExporting, setIsExporting, state, toast]);
 
-  const copyPlanUrl = useCallback(() => {
-    const changes = objectDiff(settings, initSettings);
+  const copyUrl = useCallback(() => {
+    const changes = objectDiff(state, initSettings);
     const params = new URLSearchParams(changes);
     const url = `${window.location.origin}/?${params.toString()}`;
     navigator.clipboard.writeText(url);
+    logEvent("copy_url", {
+      state,
+    });
     toast({ title: "Copied!" });
-  }, [settings, toast]);
+  }, [state, toast]);
 
   const hadnleExport = useCallback(async () => {
     if (isExporting) return;
@@ -146,10 +158,15 @@ export default function SideBar() {
     if (canvas) {
       setIsExporting(true);
       try {
-        await downloadHtmlElement(canvas, {
+        const export_settings: ExportSettings = {
           format: exportFormat,
           scale: exportScale,
-          title: filename || "codetoimg",
+          filename: filename || "codetoimg",
+        };
+        await downloadHtmlElement(canvas, export_settings);
+        logEvent("export", {
+          state,
+          export_settings,
         });
         setExportDialogOpen(false);
       } catch (err: any) {
@@ -158,7 +175,7 @@ export default function SideBar() {
         setIsExporting(false);
       }
     }
-  }, [exportFormat, exportScale, filename, isExporting, setIsExporting]);
+  }, [exportFormat, exportScale, filename, isExporting, setIsExporting, state]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -246,12 +263,12 @@ export default function SideBar() {
             <div className="flex items-center justify-between">
               <Label htmlFor="shadow-opacity">Shadow</Label>
               <p className="text-sm text-muted-foreground">
-                {settings.shadowOpacity}
+                {state.shadowOpacity}
               </p>
             </div>
             <Slider
               id="shadow-opacity"
-              value={[settings.shadowOpacity]}
+              value={[state.shadowOpacity]}
               onValueChange={(values) => {
                 setSettings((settings) => ({
                   ...settings,
@@ -451,7 +468,7 @@ export default function SideBar() {
                 <ImageIcon size={18} className="mr-2" />
                 Image
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={copyPlanUrl}>
+              <DropdownMenuItem onClick={copyUrl}>
                 <LinkIcon size={18} className="mr-2" />
                 URL
               </DropdownMenuItem>
