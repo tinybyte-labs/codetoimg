@@ -37,14 +37,14 @@ export default function ThemeToggleButton() {
   return (
     <Tooltip>
       <DropdownMenu>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild>
+          <TooltipTrigger asChild>
             <Button size="icon" variant="outline">
               {selectedTheme?.icon}
               <p className="sr-only">Change Theme</p>
             </Button>
-          </DropdownMenuTrigger>
-        </TooltipTrigger>
+          </TooltipTrigger>
+        </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
             {themes.map((item) => (

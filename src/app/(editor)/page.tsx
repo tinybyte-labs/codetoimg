@@ -1,14 +1,16 @@
 import Preview from "./preview";
 import Footer from "./footer";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export default function EditorPage() {
   return (
     <div className="relative flex flex-1 flex-col overflow-auto">
-      <div className="flex flex-1">
-        <div className="flex flex-1 items-center justify-center p-32">
+      <ScrollArea className="flex flex-1">
+        <div className="flex justify-center p-16 md:py-32">
           <Preview />
         </div>
-      </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
       <Footer />
     </div>
   );

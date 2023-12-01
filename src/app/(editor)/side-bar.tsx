@@ -42,6 +42,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { COLORS } from "@/data/colors";
 import { languageNames } from "@/data/language-names";
+import { SheetClose } from "@/components/ui/sheet";
 
 export default function SideBar() {
   const setEditor = useSetAtom(editorAtom);
@@ -84,7 +85,7 @@ export default function SideBar() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex p-4">
+      <header className="flex p-4 max-md:pr-14">
         <Link href="/">
           <Image
             src="/code-to-img.svg"

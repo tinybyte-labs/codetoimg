@@ -3,6 +3,11 @@ import { GradientBackground } from "@/lib/atoms/editor";
 export const GRADIENTS: GradientBackground[] = [
   {
     type: "gradient",
+    color: "#2af598",
+    image: "linear-gradient(180deg, #2af598 0%, #009efd 100%)",
+  },
+  {
+    type: "gradient",
     color: "#4158D0",
     image: "linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)",
   },
@@ -25,11 +30,6 @@ export const GRADIENTS: GradientBackground[] = [
     type: "gradient",
     color: "#30cfd0",
     image: "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
-  },
-  {
-    type: "gradient",
-    color: "#2af598",
-    image: "linear-gradient(180deg, #2af598 0%, #009efd 100%)",
   },
   {
     type: "gradient",

@@ -7,7 +7,7 @@ import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CodeToImg",
+  title: "Code To Image",
 };
 
 export default function RootLayout({
