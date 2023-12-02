@@ -9,6 +9,14 @@ import { tokyoNightStorm } from "./tokyo-night-storm";
 import { EditorTheme } from "@/lib/types/editor-theme";
 import { vscode } from "./vscode";
 import { xCodeDark, xCodeLight } from "./xcode";
+import { solarizedLight } from "./solarizedLight";
+import { coolGlow } from "./coolGlow";
+import { cobalt } from "./cobalt";
+import { tomorrow } from "./tomorrow";
+import { barf } from "./barf";
+import { birdsOfParadise } from "./birdsOfParadise";
+import { ayuLight } from "./ayuLight";
+import { andromeda } from "./andromeda";
 
 export const themes: Record<string, EditorTheme> = {
   aura,
@@ -24,4 +32,12 @@ export const themes: Record<string, EditorTheme> = {
   vscode,
   xCodeLight,
   xCodeDark,
+  barf,
+  birdsOfParadise,
+  tomorrow,
+  cobalt,
+  solarizedLight,
+  coolGlow,
+  ayuLight,
+  andromeda,
 };

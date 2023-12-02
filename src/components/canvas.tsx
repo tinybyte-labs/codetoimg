@@ -68,7 +68,7 @@ export default function Canvas({
           style={{
             borderRadius: value.borderRadius + 1,
             backgroundColor: theme.options.settings.background,
-            opacity: value.backgroundBlur ? 0.75 : 1,
+            opacity: value.backgroundBlur ? 0.8 : 1,
             boxShadow: `inset 0px 0px 0px 1px rgba(255,255,255, 0.3)`,
           }}
         />
@@ -105,7 +105,10 @@ export default function Canvas({
             )}
             <div className="absolute inset-0 flex items-center justify-center overflow-hidden px-24">
               <input
-                className="flex-1 bg-transparent text-center text-white placeholder-white opacity-60 outline-none"
+                className="flex-1 bg-transparent text-center opacity-60 outline-none"
+                style={{
+                  color: theme.options.theme === "dark" ? "#FFFFFF" : "#000000",
+                }}
                 value={value.title}
                 readOnly={readOnly}
                 onChange={(e) => {
