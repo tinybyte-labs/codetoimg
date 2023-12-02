@@ -59,8 +59,16 @@ export default function Canvas({
           className="absolute inset-0"
           style={{
             borderRadius: value.borderRadius + 1,
+            backgroundImage:
+              "linear-gradient(135deg, rgba(0,0,0,0), rgba(0,0,0,.4))",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            borderRadius: value.borderRadius + 1,
             backgroundColor: theme.options.settings.background,
-            opacity: value.backgroundBlur ? 0.8 : 1,
+            opacity: value.backgroundBlur ? 0.75 : 1,
             boxShadow: `inset 0px 0px 0px 1px rgba(255,255,255, 0.3)`,
           }}
         />
