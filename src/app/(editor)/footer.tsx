@@ -14,6 +14,13 @@ export default function Footer() {
         </Link>
       </p>
       <Link
+        href="https://www.buymeacoffee.com/rohid"
+        target="_blank"
+        className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
+      >
+        Buy Me a Coffee
+      </Link>
+      <Link
         href="https://github.com/tinybyte-labs/codetoimg"
         target="_blank"
         className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
