@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className=" flex flex-wrap items-center justify-center gap-4 p-4 text-sm text-muted-foreground">
+    <footer className="flex flex-wrap items-center justify-center gap-6 p-4 text-sm text-muted-foreground">
       <p className="text-center text-muted-foreground">
         Made by{" "}
         <Link
@@ -13,13 +13,19 @@ export default function Footer() {
           TinyByte Labs
         </Link>
       </p>
-      {" • "}
       <Link
         href="https://github.com/tinybyte-labs/codetoimg"
         target="_blank"
         className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
       >
-        Source Code
+        Github
+      </Link>
+      <Link
+        href="https://twitter.com/codetoimg"
+        target="_blank"
+        className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
+      >
+        Twitter
       </Link>
     </footer>
   );
