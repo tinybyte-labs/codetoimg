@@ -46,7 +46,6 @@ import {
   Loader2,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -73,6 +72,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { logEvent } from "@/lib/gtag";
+import Link from "next/link";
 
 export default function SideBar() {
   const [state, setSettings] = useAtom(settingsAtom);
@@ -180,7 +180,7 @@ export default function SideBar() {
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex p-4 max-md:pr-14">
-        <a href="/home">
+        <Link href="/">
           <Image
             src="/code-to-img.svg"
             alt="CodeToImg Logo"
@@ -188,7 +188,7 @@ export default function SideBar() {
             width={512}
             height={512}
           />
-        </a>
+        </Link>
 
         <div className="flex flex-1 items-center justify-end">
           <ThemeToggleButton />

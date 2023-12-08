@@ -46,13 +46,10 @@ export default function Canvas({
       }}
     >
       <div
-        className="relative overflow-hidden backdrop-blur-xl"
+        className="relative overflow-hidden backdrop-blur-2xl"
         style={{
           borderRadius: value.borderRadius,
-          boxShadow: `
-          0px 0px 0px 0.5px rgba(0,0,0,0.9),
-          ${value.shadowX}px ${value.shadowY}px ${value.shadowBlur}px ${value.shadowSpread}px rgba(0,0,0,${value.shadowOpacity})
-          `,
+          boxShadow: `${value.shadowX}px ${value.shadowY}px ${value.shadowBlur}px ${value.shadowSpread}px rgba(0,0,0,${value.shadowOpacity})`,
         }}
       >
         <div
@@ -63,13 +60,12 @@ export default function Canvas({
               "linear-gradient(135deg, rgba(0,0,0,0), rgba(0,0,0,.4))",
           }}
         />
+
         <div
           className="absolute inset-0"
           style={{
-            borderRadius: value.borderRadius + 1,
             backgroundColor: theme.options.settings.background,
-            opacity: value.backgroundBlur ? 0.8 : 1,
-            boxShadow: `inset 0px 0px 0px 1px rgba(255,255,255, 0.3)`,
+            opacity: value.backgroundBlur ? 0.85 : 1,
           }}
         />
 

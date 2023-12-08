@@ -1,21 +1,30 @@
 import { Button } from "@/components/ui/button";
+import { Metadata } from "next";
 import Image from "next/image";
+
+const title = "Create and Share Stunning Images of your Code";
+const description =
+  "Revamp your code into stunning images. Customize background, themes, and more. Export as an image, share a link, or embed in HTML.";
+
+export const metadata: Metadata = {
+  title,
+  description,
+};
 
 export default function HomePage() {
   return (
     <>
       <section id="hero" className="py-24">
-        <div className="container max-w-screen-md">
-          <h1 className="text-center text-5xl font-bold leading-tight">
-            Craft Stunning Visualizations of Your Code
+        <div className="container max-w-screen-lg">
+          <h1 className="text-center text-5xl font-bold md:text-6xl">
+            {title}
           </h1>
-          <p className="mt-4 text-center text-xl font-medium text-muted-foreground">
-            Unleash the Power of Customization with Our Code Screenshot
-            Generator - Your Code, Your Style, Your Image
+          <p className="mt-6 text-center text-lg font-medium leading-relaxed text-muted-foreground md:text-xl md:leading-relaxed">
+            {description}
           </p>
-          <div className="mt-8 flex items-center justify-center gap-6">
-            <Button asChild size="lg" className="h-12">
-              <a href="/">Open App</a>
+          <div className="mt-12 flex items-center justify-center gap-6">
+            <Button asChild size="lg" className="h-14 text-lg font-semibold">
+              <a href="/editor">Get Started</a>
             </Button>
           </div>
         </div>
@@ -40,7 +49,15 @@ export default function HomePage() {
               src="/images/cover-screenshot.png"
               width={3200}
               height={2200}
-              className="object-cover"
+              className="object-cover dark:hidden"
+              alt="CodeToImg Screenshot"
+            />
+
+            <Image
+              src="/images/cover-screenshot-dark.png"
+              width={3200}
+              height={2200}
+              className="hidden object-cover dark:block"
               alt="CodeToImg Screenshot"
             />
           </div>

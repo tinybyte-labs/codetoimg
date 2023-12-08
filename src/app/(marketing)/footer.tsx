@@ -15,7 +15,7 @@ export default function Footer() {
           ©{new Date().getFullYear()} TinyByte Labs LTD
         </p>
         <nav className="flex flex-1 flex-wrap items-center gap-4">
-          <Link
+          {/* <Link
             className="font-medium text-muted-foreground underline-offset-4 hover:text-accent-foreground hover:underline max-lg:text-center"
             href="/about"
           >
@@ -32,7 +32,7 @@ export default function Footer() {
             href="/legal/terms"
           >
             Terms of Service
-          </Link>
+          </Link> */}
         </nav>
         <div className="flex items-center gap-6">
           <Tooltip>
