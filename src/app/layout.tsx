@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Providers from "./providers";
 import Analytics from "./analytics";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,9 +40,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "flex min-h-screen flex-col")}>
+      <body
+        className={cn(
+          inter.className,
+          "flex min-h-screen flex-col antialiased",
+        )}
+      >
         <Analytics />
-        <Providers>{children}</Providers>
+        <TooltipProvider>
+          {children}
+          <Toaster />
+        </TooltipProvider>
       </body>
     </html>
   );

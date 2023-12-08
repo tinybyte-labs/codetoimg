@@ -1,0 +1,40 @@
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function NavBar() {
+  return (
+    <header>
+      <div className="container flex h-20 items-center">
+        <Link href="/home" className="flex items-center gap-2">
+          <Image
+            src="/code-to-img.svg"
+            alt="CodeToImg Logo"
+            className="h-10 w-10 object-contain"
+            width={512}
+            height={512}
+          />
+          <span className="text-lg font-semibold text-foreground">
+            CodeToImg
+          </span>
+        </Link>
+
+        <div className="flex flex-1 items-center justify-end">
+          <Button asChild variant="link">
+            <a href="/pricing">Pricing</a>
+          </Button>
+          <Button asChild variant="link">
+            <a href="/blog">Blog</a>
+          </Button>
+          <Button asChild className="ml-6">
+            <a href="/">
+              Editor
+              <ArrowRight className="-mr-1 ml-2 h-5 w-5" />
+            </a>
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}

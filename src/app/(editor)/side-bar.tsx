@@ -180,7 +180,7 @@ export default function SideBar() {
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex p-4 max-md:pr-14">
-        <Link href="/">
+        <a href="/home">
           <Image
             src="/code-to-img.svg"
             alt="CodeToImg Logo"
@@ -188,7 +188,7 @@ export default function SideBar() {
             width={512}
             height={512}
           />
-        </Link>
+        </a>
 
         <div className="flex flex-1 items-center justify-end">
           <ThemeToggleButton />
