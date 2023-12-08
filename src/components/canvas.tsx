@@ -5,6 +5,7 @@ import { themes } from "@/data/themes";
 import { Settings } from "@/lib/atoms/settings";
 import { logEvent } from "@/lib/gtag";
 import { cn } from "@/lib/utils";
+import { backgroundStyle } from "@/lib/utils/background-style";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
@@ -21,7 +22,7 @@ export default function Canvas({
   showCopyIcon?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
-  const theme = useMemo(() => themes[value.theme], [value.theme]);
+  const theme = useMemo(() => themes[value.editor.theme], [value.editor.theme]);
 
   const copyCode = useCallback(() => {
     if (copied) return;
@@ -37,45 +38,31 @@ export default function Canvas({
     <div
       id="canvas"
       style={{
-        padding: value.padding,
-        width: value.width,
-        height: value.height,
+        padding: value.frame.padding,
+        width: value.frame.width,
+        height: value.frame.height,
       }}
       className="relative"
     >
       <div
         className="absolute inset-0"
         style={{
-          display: value.background.hidden ? "none" : "block",
-          opacity: value.background.opacity,
-          ...(value.background.type === "color"
-            ? {
-                backgroundColor: value.background.color,
-              }
-            : value.background.type === "gradient"
-              ? {
-                  backgroundImage: value.background.gradient,
-                }
-              : value.background.type === "image"
-                ? {
-                    backgroundImage: `url(${value.background.imageUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }
-                : {}),
+          display: value.frame.hidden ? "none" : "block",
+          opacity: value.frame.opacity,
+          ...backgroundStyle(value.frame.background),
         }}
       />
       <div
         className="relative overflow-hidden backdrop-blur-2xl"
         style={{
-          borderRadius: value.borderRadius,
-          boxShadow: `${value.shadowX}px ${value.shadowY}px ${value.shadowBlur}px ${value.shadowSpread}px rgba(0,0,0,${value.shadowOpacity})`,
+          borderRadius: value.widnow.borderRadius,
+          boxShadow: value.widnow.shadow,
         }}
       >
         <div
           className="absolute inset-0"
           style={{
-            borderRadius: value.borderRadius + 1,
+            borderRadius: value.widnow.borderRadius + 1,
             backgroundImage:
               "linear-gradient(135deg, rgba(0,0,0,0), rgba(0,0,0,.4))",
           }}
@@ -85,13 +72,12 @@ export default function Canvas({
           className="absolute inset-0"
           style={{
             backgroundColor: theme.options.settings.background,
-            opacity: value.backgroundBlur ? 0.85 : 1,
           }}
         />
 
-        {value.showTitleBar && (
+        {value.widnow.showTitleBar && (
           <div className="relative h-14">
-            {value.showTraficLights && (
+            {value.widnow.showTraficLights && (
               <div className="absolute left-6 top-1/2 flex -translate-y-1/2 items-center gap-2">
                 <div
                   className="h-3 w-3 rounded-full"
@@ -136,16 +122,16 @@ export default function Canvas({
         )}
         <div
           className={cn("p-4", {
-            "pt-0": value.showTitleBar,
+            "pt-0": value.widnow.showTitleBar,
           })}
         >
           <CodeEditor
             value={value.code}
             onChange={(code) => onChange?.({ ...value, code })}
-            language={value.language}
-            fontSize={value.fontSize}
-            showLineNumbers={value.showLineNumbers}
-            theme={value.theme}
+            language={value.editor.language}
+            fontSize={value.editor.fontSize}
+            showLineNumbers={value.editor.showLineNumbers}
+            theme={value.editor.theme}
             readOnly={readOnly}
           />
         </div>

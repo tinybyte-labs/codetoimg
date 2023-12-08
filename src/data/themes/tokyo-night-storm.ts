@@ -1,4 +1,3 @@
-import { CreateThemeOptions } from "@uiw/codemirror-themes";
 import { tags as t } from "@lezer/highlight";
 import { EditorTheme } from "@/lib/types/editor-theme";
 

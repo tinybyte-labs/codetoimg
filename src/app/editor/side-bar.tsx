@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import ThemeToggleButton from "@/components/theme-toggle-button";
@@ -13,20 +12,10 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { GRADIENTS } from "@/data/gradients";
 import {
-  backgroundBlurAtom,
-  borderRadiusAtom,
   settingsAtom,
-  fontSizeAtom,
   initSettings,
   isExportingAtom,
-  languageAtom,
-  paddingAtom,
-  showLineNumbersAtom,
-  showTitleBarAtom,
-  showTraficLightsAtom,
-  themeAtom,
 } from "@/lib/atoms/settings";
 import { themes } from "@/data/themes";
 import {
@@ -48,9 +37,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { COLORS } from "@/data/colors";
 import { languageNames } from "@/data/language-names";
 import {
   DropdownMenu,
@@ -74,24 +61,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { logEvent } from "@/lib/gtag";
 import Link from "next/link";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { BASE_URL } from "@/constants";
+import FrameSettings from "./frame-settings";
+import WindowSettings from "./window-settings";
+import EditorSettings from "./editor-settings";
 
 export default function SideBar() {
   const [state, setSettings] = useAtom(settingsAtom);
-  const [fontSize, setFontSize] = useAtom(fontSizeAtom);
-  const [backgroundBlur, setBackgroundBlur] = useAtom(backgroundBlurAtom);
-  const [showTitleBar, setShowTitleBar] = useAtom(showTitleBarAtom);
-  const [showTraficLights, setShowTraficLights] = useAtom(showTraficLightsAtom);
-  const [showLineNumbers, setShowLineNumbers] = useAtom(showLineNumbersAtom);
-  const [borderRadius, setBorderRadius] = useAtom(borderRadiusAtom);
-  const [padding, setPadding] = useAtom(paddingAtom);
-  const [language, setLanguage] = useAtom(languageAtom);
-  const [theme, setTheme] = useAtom(themeAtom);
   const [isExporting, setIsExporting] = useAtom(isExportingAtom);
   const { toast } = useToast();
   const [exportFormat, setExportFormat] = useState<"png" | "jpeg" | "svg">(
@@ -204,213 +179,9 @@ export default function SideBar() {
 
       <ScrollArea className="flex-1">
         <div className="space-y-6 py-4">
-          <fieldset className="flex items-center justify-between gap-4 px-4">
-            <Label>Background</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <div className="transparent-grid relative aspect-[3/2] h-10 overflow-hidden rounded-md border">
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      display: state.background.hidden ? "none" : "block",
-                      opacity: state.background.opacity,
-                      ...(state.background.type === "color"
-                        ? {
-                            backgroundColor: state.background.color,
-                          }
-                        : state.background.type === "gradient"
-                          ? {
-                              backgroundImage: state.background.gradient,
-                            }
-                          : state.background.type === "image"
-                            ? {
-                                backgroundImage: `url(${state.background.imageUrl})`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                              }
-                            : {}),
-                    }}
-                  />
-                </div>
-              </PopoverTrigger>
-              <PopoverContent side="right" align="start" className="w-96">
-                <Tabs defaultValue="gradient">
-                  <TabsList className="w-full">
-                    <TabsTrigger className="flex-1" value="gradient">
-                      Gradient
-                    </TabsTrigger>
-                    <TabsTrigger className="flex-1" value="color">
-                      Color
-                    </TabsTrigger>
-                    <TabsTrigger className="flex-1" value="image">
-                      Image
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="color" asChild>
-                    <ColorPicker />
-                  </TabsContent>
-                  <TabsContent value="gradient" asChild>
-                    <GradientPicker />
-                  </TabsContent>
-                  <TabsContent value="image" asChild>
-                    <ImagePicker />
-                  </TabsContent>
-                </Tabs>
-              </PopoverContent>
-            </Popover>
-          </fieldset>
-
-          <fieldset className="space-y-1 px-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="padding">Padding</Label>
-              <p className="text-sm text-muted-foreground">{padding}px</p>
-            </div>
-            <Slider
-              id="padding"
-              value={[padding]}
-              onValueChange={(values) => {
-                setPadding(values[0]);
-              }}
-              min={32}
-              max={128}
-              step={1}
-            />
-          </fieldset>
-
-          <fieldset className="space-y-1 px-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="border-radius">Roundness</Label>
-              <p className="text-sm text-muted-foreground">{borderRadius}px</p>
-            </div>
-            <Slider
-              id="border-radius"
-              value={[borderRadius]}
-              onValueChange={(values) => {
-                setBorderRadius(values[0]);
-              }}
-              min={0}
-              max={100}
-              step={1}
-            />
-          </fieldset>
-
-          <fieldset className="space-y-1 px-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="shadow-opacity">Shadow</Label>
-              <p className="text-sm text-muted-foreground">
-                {state.shadowOpacity}
-              </p>
-            </div>
-            <Slider
-              id="shadow-opacity"
-              value={[state.shadowOpacity]}
-              onValueChange={(values) => {
-                setSettings((settings) => ({
-                  ...settings,
-                  shadowOpacity: values[0],
-                }));
-              }}
-              min={0}
-              max={1}
-              step={0.1}
-            />
-          </fieldset>
-
-          <fieldset className="space-y-1 px-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="shadow-opacity">Font Size</Label>
-              <p className="text-sm text-muted-foreground">{fontSize}</p>
-            </div>
-            <Slider
-              id="shadow-opacity"
-              value={[fontSize]}
-              onValueChange={(values) => {
-                setFontSize(values[0]);
-              }}
-              min={12}
-              max={32}
-              step={1}
-            />
-          </fieldset>
-
-          <fieldset className="space-y-1 px-4">
-            <Label htmlFor="background-blur">Language</Label>
-            <Select
-              value={language}
-              onValueChange={(lang: LanguageName) => setLanguage(lang)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(languageNames)
-                  .sort((a, b) => a[0].localeCompare(b[0]))
-                  .map((item) => (
-                    <SelectItem key={item[0]} value={item[0]}>
-                      {item[1]}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </fieldset>
-
-          <fieldset className="space-y-1 px-4">
-            <Label htmlFor="background-blur">Theme</Label>
-            <Select value={theme} onValueChange={setTheme}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(themes)
-                  .sort()
-                  .map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {themes[option]?.name || "Unknown"}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-          </fieldset>
-
-          <fieldset className="flex items-center justify-between px-4">
-            <Label htmlFor="background-blur">Background Blur</Label>
-            <Switch
-              id="background-blur"
-              checked={backgroundBlur}
-              onCheckedChange={setBackgroundBlur}
-            />
-          </fieldset>
-
-          <fieldset className="flex items-center justify-between px-4">
-            <Label htmlFor="show-title-bar">Title Bar</Label>
-            <Switch
-              id="show-title-bar"
-              checked={showTitleBar}
-              onCheckedChange={setShowTitleBar}
-            />
-          </fieldset>
-
-          {showTitleBar && (
-            <>
-              <fieldset className="flex items-center justify-between px-4">
-                <Label htmlFor="show-trafic-lights">Trafic Lights</Label>
-                <Switch
-                  id="show-trafic-lights"
-                  checked={showTraficLights}
-                  onCheckedChange={setShowTraficLights}
-                />
-              </fieldset>
-            </>
-          )}
-
-          <fieldset className="flex items-center justify-between px-4">
-            <Label htmlFor="line-numbers">Line Numbers</Label>
-            <Switch
-              id="line-numbers"
-              checked={showLineNumbers}
-              onCheckedChange={setShowLineNumbers}
-            />
-          </fieldset>
+          <FrameSettings />
+          <WindowSettings />
+          <EditorSettings />
         </div>
         <ScrollBar orientation="vertical" />
       </ScrollArea>
@@ -521,198 +292,3 @@ export default function SideBar() {
     </div>
   );
 }
-
-const ColorPicker = () => {
-  const [settings, setSettings] = useAtom(settingsAtom);
-
-  return (
-    <div className="pt-4">
-      <Input
-        placeholder="Enter a valid hex color value"
-        value={
-          settings.background.type === "color" ? settings.background.color : ""
-        }
-        onChange={(e) => {
-          console.log(e);
-          setSettings({
-            ...settings,
-            background: {
-              ...settings.background,
-              type: "color",
-              color: e.currentTarget.value,
-            },
-          });
-        }}
-      />
-      <div className="grid grid-cols-6 gap-2 pt-4">
-        {COLORS.map((color) => (
-          <button
-            key={color}
-            onClick={() =>
-              setSettings((settings) => ({
-                ...settings,
-                background: {
-                  ...settings.background,
-                  type: "color",
-                  color,
-                },
-              }))
-            }
-            className={cn("aspect-square rounded-full border", {
-              "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                settings.background.type === "color" &&
-                settings.background.color === color,
-            })}
-            style={{ backgroundColor: color }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const GradientPicker = () => {
-  const [settings, setSettings] = useAtom(settingsAtom);
-  return (
-    <div className="pt-4">
-      <Input
-        placeholder="Enter a valid CSS gradient value"
-        value={
-          settings.background.type === "gradient"
-            ? settings.background.gradient
-            : ""
-        }
-        onChange={(e) => {
-          setSettings({
-            ...settings,
-            background: {
-              ...settings.background,
-              type: "gradient",
-              gradient: e.currentTarget.value,
-            },
-          });
-        }}
-      />
-      <div className="grid grid-cols-6 gap-2 pt-4">
-        {GRADIENTS.map((gradient) => (
-          <button
-            key={gradient}
-            onClick={() =>
-              setSettings((settings) => ({
-                ...settings,
-                background: {
-                  ...settings.background,
-                  type: "gradient",
-                  gradient,
-                },
-              }))
-            }
-            style={{ backgroundImage: gradient }}
-            className={cn("aspect-square rounded-full border", {
-              "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                settings.background.type === "gradient" &&
-                settings.background.gradient === gradient,
-            })}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const IMAGES = [
-  "/images/wallpapers/wallpaper-01.png",
-  "/images/wallpapers/wallpaper-02.png",
-  "/images/wallpapers/wallpaper-03.png",
-  "/images/wallpapers/wallpaper-04.png",
-  "/images/wallpapers/wallpaper-05.png",
-  "/images/wallpapers/wallpaper-06.png",
-  "/images/wallpapers/wallpaper-07.png",
-  "/images/wallpapers/wallpaper-08.png",
-  "/images/wallpapers/wallpaper-09.png",
-  "/images/wallpapers/wallpaper-10.png",
-  "/images/wallpapers/wallpaper-11.png",
-  "/images/wallpapers/wallpaper-12.png",
-].map((imageUrl) => `${BASE_URL}${imageUrl}`);
-
-const ImagePicker = () => {
-  const [settings, setSettings] = useAtom(settingsAtom);
-
-  return (
-    <div className="pt-4">
-      <Input
-        placeholder="Enter a valid image URL"
-        value={
-          settings.background.type === "image"
-            ? settings.background.imageUrl
-            : ""
-        }
-        onChange={(e) => {
-          setSettings((settings) => ({
-            ...settings,
-            background: {
-              ...settings.background,
-              type: "image",
-              imageUrl: e.currentTarget.value,
-            },
-          }));
-        }}
-        className="flex-1"
-      />
-      <p className="my-2 text-center text-sm text-muted-foreground">OR</p>
-      <div className="relative">
-        <Button asChild className="w-full" variant="outline">
-          <label htmlFor="image-picker" className=" cursor-pointer">
-            Upload Image
-          </label>
-        </Button>
-        <input
-          id="image-picker"
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const files = e.currentTarget.files;
-            if (files && files.length > 0) {
-              setSettings((settings) => ({
-                ...settings,
-                background: {
-                  ...settings.background,
-                  type: "image",
-                  imageUrl: URL.createObjectURL(files[0]),
-                },
-              }));
-            }
-          }}
-          className="pointer-events-none absolute opacity-0"
-        />
-      </div>
-      <div className="grid grid-cols-3 gap-2 pt-4">
-        {IMAGES.map((imageUrl, i) => (
-          <button
-            key={i}
-            onClick={() =>
-              setSettings((settings) => ({
-                ...settings,
-                background: {
-                  ...settings.background,
-                  type: "image",
-                  imageUrl,
-                },
-              }))
-            }
-            className={cn("aspect-[3/2] overflow-hidden rounded-xl border", {
-              "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                settings.background.type === "image" &&
-                settings.background.imageUrl === imageUrl,
-            })}
-            style={{
-              backgroundImage: `url(${imageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};

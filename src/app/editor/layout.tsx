@@ -26,7 +26,7 @@ export default function EditorLayout({ children }: { children: ReactNode }) {
     if (!domLoaded) return;
     const timeout = setTimeout(() => {
       localStorage.setItem("editor-state", JSON.stringify(state));
-    }, 500);
+    }, 200);
 
     return () => {
       clearTimeout(timeout);
