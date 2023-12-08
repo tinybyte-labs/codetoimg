@@ -33,6 +33,7 @@
     "@uiw/codemirror-extensions-langs": "^4.21.21",
     "@uiw/codemirror-themes": "^4.21.21",
     "@uiw/react-codemirror": "^4.21.21",
+    "@vercel/kv": "^1.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "deepmerge": "^4.3.1",

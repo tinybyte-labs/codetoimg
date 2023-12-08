@@ -3,9 +3,30 @@ import { LanguageName } from "@uiw/codemirror-extensions-langs";
 import { atom } from "jotai";
 import { focusAtom } from "jotai-optics";
 
+export type BackgroundGradient = {
+  type: "gradient";
+  gradient: string;
+};
+export type BackgroundColor = {
+  type: "color";
+  color: string;
+};
+export type BackgroundImage = {
+  type: "image";
+  imageUrl: string;
+};
+
+export type Background = (
+  | BackgroundColor
+  | BackgroundGradient
+  | BackgroundImage
+) & {
+  hidden: boolean;
+  opacity: number;
+};
+
 export type Settings = {
-  backgroundColor?: string;
-  backgroundImage?: string;
+  background: Background;
   backgroundBlur: boolean;
   width: number | "auto";
   height: number | "auto";
@@ -42,7 +63,12 @@ const Component = () => {
 }`;
 
 export const initSettings: Settings = {
-  backgroundImage: GRADIENTS[0],
+  background: {
+    hidden: false,
+    opacity: 1,
+    type: "gradient",
+    gradient: GRADIENTS[0],
+  },
   width: "auto",
   height: "auto",
   theme: "tokyoNightStorm",

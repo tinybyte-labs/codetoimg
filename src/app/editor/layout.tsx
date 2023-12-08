@@ -6,13 +6,32 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeProvider from "@/components/theme-provider";
+import { useAtom } from "jotai";
+import { settingsAtom } from "@/lib/atoms/settings";
 
 export default function EditorLayout({ children }: { children: ReactNode }) {
   const [domLoaded, setDomLoaded] = useState(false);
+  const [state, setState] = useAtom(settingsAtom);
 
   useEffect(() => {
+    const editorState = localStorage.getItem("editor-state");
+    if (editorState) {
+      const data = JSON.parse(editorState);
+      setState(data);
+    }
     setDomLoaded(true);
-  }, []);
+  }, [setState]);
+
+  useEffect(() => {
+    if (!domLoaded) return;
+    const timeout = setTimeout(() => {
+      localStorage.setItem("editor-state", JSON.stringify(state));
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [domLoaded, state]);
 
   return (
     <ThemeProvider>
@@ -33,7 +52,6 @@ export default function EditorLayout({ children }: { children: ReactNode }) {
               </SheetContent>
             </Sheet>
           </div>
-
           {children}
         </div>
       ) : (

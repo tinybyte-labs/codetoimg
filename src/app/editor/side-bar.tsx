@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import ThemeToggleButton from "@/components/theme-toggle-button";
@@ -73,6 +74,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { logEvent } from "@/lib/gtag";
 import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { BASE_URL } from "@/constants";
 
 export default function SideBar() {
   const [state, setSettings] = useAtom(settingsAtom);
@@ -197,32 +204,60 @@ export default function SideBar() {
 
       <ScrollArea className="flex-1">
         <div className="space-y-6 py-4">
-          <fieldset>
-            <Tabs defaultValue="gradient">
-              <div className="space-y-1 px-4">
-                <Label>Background</Label>
-                <TabsList className="w-full">
-                  <TabsTrigger className="flex-1" value="color">
-                    Color
-                  </TabsTrigger>
-                  <TabsTrigger className="flex-1" value="gradient">
-                    Gradient
-                  </TabsTrigger>
-                  <TabsTrigger className="flex-1" value="image">
-                    Image
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-              <TabsContent value="color" asChild>
-                <ColorPicker />
-              </TabsContent>
-              <TabsContent value="gradient" asChild>
-                <GradientPicker />
-              </TabsContent>
-              <TabsContent value="image" asChild>
-                <ImagePicker />
-              </TabsContent>
-            </Tabs>
+          <fieldset className="flex items-center justify-between gap-4 px-4">
+            <Label>Background</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="transparent-grid relative aspect-[3/2] h-10 overflow-hidden rounded-md border">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      display: state.background.hidden ? "none" : "block",
+                      opacity: state.background.opacity,
+                      ...(state.background.type === "color"
+                        ? {
+                            backgroundColor: state.background.color,
+                          }
+                        : state.background.type === "gradient"
+                          ? {
+                              backgroundImage: state.background.gradient,
+                            }
+                          : state.background.type === "image"
+                            ? {
+                                backgroundImage: `url(${state.background.imageUrl})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }
+                            : {}),
+                    }}
+                  />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent side="right" align="start" className="w-96">
+                <Tabs defaultValue="gradient">
+                  <TabsList className="w-full">
+                    <TabsTrigger className="flex-1" value="gradient">
+                      Gradient
+                    </TabsTrigger>
+                    <TabsTrigger className="flex-1" value="color">
+                      Color
+                    </TabsTrigger>
+                    <TabsTrigger className="flex-1" value="image">
+                      Image
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="color" asChild>
+                    <ColorPicker />
+                  </TabsContent>
+                  <TabsContent value="gradient" asChild>
+                    <GradientPicker />
+                  </TabsContent>
+                  <TabsContent value="image" asChild>
+                    <ImagePicker />
+                  </TabsContent>
+                </Tabs>
+              </PopoverContent>
+            </Popover>
           </fieldset>
 
           <fieldset className="space-y-1 px-4">
@@ -491,69 +526,97 @@ const ColorPicker = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
 
   return (
-    <ScrollArea className="w-80">
-      <div className="grid grid-flow-col grid-rows-2 gap-2 p-4">
-        {COLORS.map((color, i) => (
+    <div className="pt-4">
+      <Input
+        placeholder="Enter a valid hex color value"
+        value={
+          settings.background.type === "color" ? settings.background.color : ""
+        }
+        onChange={(e) => {
+          console.log(e);
+          setSettings({
+            ...settings,
+            background: {
+              ...settings.background,
+              type: "color",
+              color: e.currentTarget.value,
+            },
+          });
+        }}
+      />
+      <div className="grid grid-cols-6 gap-2 pt-4">
+        {COLORS.map((color) => (
           <button
-            key={i}
+            key={color}
             onClick={() =>
               setSettings((settings) => ({
                 ...settings,
-                backgroundColor: color,
-                backgroundImage: undefined,
+                background: {
+                  ...settings.background,
+                  type: "color",
+                  color,
+                },
               }))
             }
-            className={cn(
-              "relative h-14 w-14 overflow-hidden rounded-xl border",
-              {
-                "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                  settings.backgroundColor === color,
-              },
-            )}
-          >
-            <div className="transparent-grid absolute inset-0"></div>
-            <div
-              className="absolute inset-0 z-10"
-              style={{
-                backgroundColor: color,
-              }}
-            ></div>
-            <p className="sr-only">Gradient color {i}</p>
-          </button>
+            className={cn("aspect-square rounded-full border", {
+              "ring-2 ring-ring ring-offset-2 ring-offset-background":
+                settings.background.type === "color" &&
+                settings.background.color === color,
+            })}
+            style={{ backgroundColor: color }}
+          />
         ))}
       </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    </div>
   );
 };
 
 const GradientPicker = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
   return (
-    <ScrollArea className="w-80">
-      <div className="grid w-fit grid-flow-col grid-rows-2 gap-2 p-4">
-        {GRADIENTS.map((gradient, i) => (
+    <div className="pt-4">
+      <Input
+        placeholder="Enter a valid CSS gradient value"
+        value={
+          settings.background.type === "gradient"
+            ? settings.background.gradient
+            : ""
+        }
+        onChange={(e) => {
+          setSettings({
+            ...settings,
+            background: {
+              ...settings.background,
+              type: "gradient",
+              gradient: e.currentTarget.value,
+            },
+          });
+        }}
+      />
+      <div className="grid grid-cols-6 gap-2 pt-4">
+        {GRADIENTS.map((gradient) => (
           <button
-            key={i}
+            key={gradient}
             onClick={() =>
               setSettings((settings) => ({
                 ...settings,
-                backgroundColor: undefined,
-                backgroundImage: gradient,
+                background: {
+                  ...settings.background,
+                  type: "gradient",
+                  gradient,
+                },
               }))
             }
-            style={{
-              backgroundImage: gradient,
-            }}
-            className={cn("h-14 w-14 rounded-xl border", {
+            style={{ backgroundImage: gradient }}
+            className={cn("aspect-square rounded-full border", {
               "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                settings.backgroundImage === gradient,
+                settings.background.type === "gradient" &&
+                settings.background.gradient === gradient,
             })}
           />
         ))}
       </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    </div>
   );
 };
 
@@ -570,43 +633,86 @@ const IMAGES = [
   "/images/wallpapers/wallpaper-10.png",
   "/images/wallpapers/wallpaper-11.png",
   "/images/wallpapers/wallpaper-12.png",
-];
+].map((imageUrl) => `${BASE_URL}${imageUrl}`);
 
 const ImagePicker = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
 
   return (
-    <ScrollArea className="w-80 whitespace-nowrap">
-      <div className="flex gap-4 whitespace-nowrap p-4">
+    <div className="pt-4">
+      <Input
+        placeholder="Enter a valid image URL"
+        value={
+          settings.background.type === "image"
+            ? settings.background.imageUrl
+            : ""
+        }
+        onChange={(e) => {
+          setSettings((settings) => ({
+            ...settings,
+            background: {
+              ...settings.background,
+              type: "image",
+              imageUrl: e.currentTarget.value,
+            },
+          }));
+        }}
+        className="flex-1"
+      />
+      <p className="my-2 text-center text-sm text-muted-foreground">OR</p>
+      <div className="relative">
+        <Button asChild className="w-full" variant="outline">
+          <label htmlFor="image-picker" className=" cursor-pointer">
+            Upload Image
+          </label>
+        </Button>
+        <input
+          id="image-picker"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const files = e.currentTarget.files;
+            if (files && files.length > 0) {
+              setSettings((settings) => ({
+                ...settings,
+                background: {
+                  ...settings.background,
+                  type: "image",
+                  imageUrl: URL.createObjectURL(files[0]),
+                },
+              }));
+            }
+          }}
+          className="pointer-events-none absolute opacity-0"
+        />
+      </div>
+      <div className="grid grid-cols-3 gap-2 pt-4">
         {IMAGES.map((imageUrl, i) => (
           <button
             key={i}
             onClick={() =>
               setSettings((settings) => ({
                 ...settings,
-                backgroundColor: undefined,
-                backgroundImage: `url(${imageUrl})`,
+                background: {
+                  ...settings.background,
+                  type: "image",
+                  imageUrl,
+                },
               }))
             }
-            className={cn(
-              "h-[120px] w-[180px] overflow-hidden rounded-xl border",
-              {
-                "ring-2 ring-ring ring-offset-2 ring-offset-background":
-                  settings.backgroundImage === `url(${imageUrl})`,
-              },
-            )}
-          >
-            <Image
-              src={imageUrl}
-              alt="Wallpaper"
-              width={180}
-              height={120}
-              className="h-full w-full object-cover"
-            />
-          </button>
+            className={cn("aspect-[3/2] overflow-hidden rounded-xl border", {
+              "ring-2 ring-ring ring-offset-2 ring-offset-background":
+                settings.background.type === "image" &&
+                settings.background.imageUrl === imageUrl,
+            })}
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
         ))}
       </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
+    </div>
   );
 };

@@ -37,14 +37,34 @@ export default function Canvas({
     <div
       id="canvas"
       style={{
-        backgroundColor: value.backgroundColor,
-        backgroundImage: value.backgroundImage,
-        backgroundSize: "cover",
         padding: value.padding,
         width: value.width,
         height: value.height,
       }}
+      className="relative"
     >
+      <div
+        className="absolute inset-0"
+        style={{
+          display: value.background.hidden ? "none" : "block",
+          opacity: value.background.opacity,
+          ...(value.background.type === "color"
+            ? {
+                backgroundColor: value.background.color,
+              }
+            : value.background.type === "gradient"
+              ? {
+                  backgroundImage: value.background.gradient,
+                }
+              : value.background.type === "image"
+                ? {
+                    backgroundImage: `url(${value.background.imageUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : {}),
+        }}
+      />
       <div
         className="relative overflow-hidden backdrop-blur-2xl"
         style={{
