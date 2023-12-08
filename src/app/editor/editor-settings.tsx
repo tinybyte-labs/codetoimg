@@ -1,4 +1,4 @@
-import { settingsAtom } from "@/lib/atoms/settings";
+import { editorStateAtom } from "@/lib/atoms/editor-state";
 import { useAtom } from "jotai";
 import SettingsGroup from "./settings-group";
 import ToolItem from "./tool-item";
@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 const fontSizes = [12, 14, 16, 18, 20];
 
 export default function EditorSettings() {
-  const [editorState, setEditorState] = useAtom(settingsAtom);
+  const [editorState, setEditorState] = useAtom(editorStateAtom);
   return (
     <SettingsGroup title="Editor">
       <ToolItem label="Font Size">
@@ -62,31 +62,6 @@ export default function EditorSettings() {
               .map((item) => (
                 <SelectItem key={item[0]} value={item[0]}>
                   {item[1]}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </ToolItem>
-
-      <ToolItem label="Theme">
-        <Select
-          value={editorState.editor.theme}
-          onValueChange={(theme) =>
-            setEditorState((state) => ({
-              ...state,
-              editor: { ...state.editor, theme },
-            }))
-          }
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(themes)
-              .sort()
-              .map((option) => (
-                <SelectItem key={option[0]} value={option[0]}>
-                  {option[1].name}
                 </SelectItem>
               ))}
           </SelectContent>

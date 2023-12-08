@@ -15,10 +15,8 @@ export type BackgroundImage = {
   type: "image";
   imageUrl: string;
 };
-
 export type Background = BackgroundColor | BackgroundGradient | BackgroundImage;
-
-export type Settings = {
+export type EditorState = {
   frame: {
     background: Background;
     width: number | "auto";
@@ -32,10 +30,10 @@ export type Settings = {
     showTraficLights: boolean;
     borderRadius: number;
     shadow: string;
+    theme: string;
   };
   editor: {
     fontSize: number;
-    theme: string;
     language: LanguageName;
     showLineNumbers: boolean;
   };
@@ -58,7 +56,7 @@ const Component = () => {
   )
 }`;
 
-export const initSettings: Settings = {
+export const initEditorState: EditorState = {
   frame: {
     hidden: false,
     opacity: 1,
@@ -75,10 +73,10 @@ export const initSettings: Settings = {
     showTitleBar: true,
     showTraficLights: true,
     shadow: shadows[1].value,
+    theme: "tokyoNight",
   },
   editor: {
     fontSize: 16,
-    theme: "tokyoNight",
     language: "jsx",
     showLineNumbers: false,
   },
@@ -86,10 +84,12 @@ export const initSettings: Settings = {
   title: "Untitled-01",
 };
 
-export const settingsAtom = atom<Settings>(initSettings);
+export const editorStateAtom = atom<EditorState>(initEditorState);
 
-export const codeAtom = focusAtom(settingsAtom, (optic) => optic.prop("code"));
-export const titleAtom = focusAtom(settingsAtom, (optic) =>
+export const codeAtom = focusAtom(editorStateAtom, (optic) =>
+  optic.prop("code"),
+);
+export const titleAtom = focusAtom(editorStateAtom, (optic) =>
   optic.prop("title"),
 );
 

@@ -2,7 +2,7 @@ import SettingsGroup from "./settings-group";
 import ToolItem from "./tool-item";
 import { Switch } from "@/components/ui/switch";
 import { useAtom } from "jotai";
-import { settingsAtom } from "@/lib/atoms/settings";
+import { editorStateAtom } from "@/lib/atoms/editor-state";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -12,12 +12,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { shadows } from "@/constants";
+import { themes } from "@/data/themes";
 
 export default function WindowSettings() {
-  const [editorState, setEditorState] = useAtom(settingsAtom);
+  const [editorState, setEditorState] = useAtom(editorStateAtom);
 
   return (
     <SettingsGroup title="Window">
+      <ToolItem label="Theme">
+        <Select
+          value={editorState.widnow.theme}
+          onValueChange={(theme) =>
+            setEditorState((state) => ({
+              ...state,
+              widnow: { ...state.widnow, theme },
+            }))
+          }
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(themes)
+              .sort()
+              .map((option) => (
+                <SelectItem key={option[0]} value={option[0]}>
+                  {option[1].name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </ToolItem>
+
       <ToolItem label="Title Bar">
         <Switch
           id="show-trafic-lights"

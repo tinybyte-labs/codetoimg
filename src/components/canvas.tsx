@@ -2,7 +2,7 @@
 
 import CodeEditor from "@/components/code-editor";
 import { themes } from "@/data/themes";
-import { Settings } from "@/lib/atoms/settings";
+import { EditorState } from "@/lib/atoms/editor-state";
 import { logEvent } from "@/lib/gtag";
 import { cn } from "@/lib/utils";
 import { backgroundStyle } from "@/lib/utils/background-style";
@@ -15,14 +15,14 @@ export default function Canvas({
   readOnly,
   showCopyIcon,
 }: {
-  value: Settings;
-  onChange?: (value: Settings) => void;
+  value: EditorState;
+  onChange?: (value: EditorState) => void;
   onTitleChange?: (value: string) => void;
   readOnly?: boolean;
   showCopyIcon?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
-  const theme = useMemo(() => themes[value.editor.theme], [value.editor.theme]);
+  const theme = useMemo(() => themes[value.widnow.theme], [value.widnow.theme]);
 
   const copyCode = useCallback(() => {
     if (copied) return;
@@ -131,7 +131,7 @@ export default function Canvas({
             language={value.editor.language}
             fontSize={value.editor.fontSize}
             showLineNumbers={value.editor.showLineNumbers}
-            theme={value.editor.theme}
+            theme={value.widnow.theme}
             readOnly={readOnly}
           />
         </div>

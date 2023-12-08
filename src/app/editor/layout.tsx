@@ -7,11 +7,11 @@ import { Loader2, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeProvider from "@/components/theme-provider";
 import { useAtom } from "jotai";
-import { settingsAtom } from "@/lib/atoms/settings";
+import { editorStateAtom } from "@/lib/atoms/editor-state";
 
 export default function EditorLayout({ children }: { children: ReactNode }) {
   const [domLoaded, setDomLoaded] = useState(false);
-  const [state, setState] = useAtom(settingsAtom);
+  const [state, setState] = useAtom(editorStateAtom);
 
   useEffect(() => {
     const editorState = localStorage.getItem("editor-state");

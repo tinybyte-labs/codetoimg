@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Settings, initSettings } from "../atoms/settings";
+import { EditorState, initEditorState } from "../atoms/editor-state";
 
 export * from "./converter";
 
@@ -37,8 +37,8 @@ export function objectDiff(object: any, compareWith: any) {
 }
 
 export const getSettings = (params: any) => {
-  const settings: Settings = {
-    ...initSettings,
+  const settings: EditorState = {
+    ...initEditorState,
     ...params,
   };
   if (params.padding) {

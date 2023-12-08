@@ -2,12 +2,12 @@
 
 import Canvas from "@/components/canvas";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Settings, settingsAtom } from "@/lib/atoms/settings";
+import { EditorState, editorStateAtom } from "@/lib/atoms/editor-state";
 import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
-export default function Preview({ initState }: { initState: Settings }) {
-  const [settings, setSettings] = useAtom(settingsAtom);
+export default function Preview({ initState }: { initState: EditorState }) {
+  const [settings, setSettings] = useAtom(editorStateAtom);
   const [containerHeight, setContainerHeight] = useState(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 

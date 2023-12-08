@@ -13,10 +13,10 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import {
-  settingsAtom,
-  initSettings,
+  editorStateAtom,
+  initEditorState,
   isExportingAtom,
-} from "@/lib/atoms/settings";
+} from "@/lib/atoms/editor-state";
 import { themes } from "@/data/themes";
 import {
   ExportSettings,
@@ -66,7 +66,7 @@ import WindowSettings from "./window-settings";
 import EditorSettings from "./editor-settings";
 
 export default function SideBar() {
-  const [state, setSettings] = useAtom(settingsAtom);
+  const [state, setSettings] = useAtom(editorStateAtom);
   const [isExporting, setIsExporting] = useAtom(isExportingAtom);
   const { toast } = useToast();
   const [exportFormat, setExportFormat] = useState<"png" | "jpeg" | "svg">(
@@ -77,13 +77,13 @@ export default function SideBar() {
   const [filename, setFilename] = useState("codetoimg");
 
   const handleReset = useCallback(() => {
-    setSettings(initSettings);
+    setSettings(initEditorState);
     logEvent("reset_state");
   }, [setSettings]);
 
   const copyEmbeding = useCallback(async () => {
     const canvas = document.getElementById("canvas");
-    const changes = objectDiff(state, initSettings);
+    const changes = objectDiff(state, initEditorState);
     const params = new URLSearchParams(changes);
     const src = `${window.location.origin}/embed?${params.toString()}`;
     navigator.clipboard.writeText(
@@ -124,7 +124,7 @@ export default function SideBar() {
   }, [isExporting, setIsExporting, state, toast]);
 
   const copyUrl = useCallback(() => {
-    const changes = objectDiff(state, initSettings);
+    const changes = objectDiff(state, initEditorState);
     const params = new URLSearchParams(changes);
     const url = `${window.location.origin}/?${params.toString()}`;
     navigator.clipboard.writeText(url);

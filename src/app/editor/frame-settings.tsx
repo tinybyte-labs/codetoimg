@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { colors, gradients, images } from "@/constants";
-import { Background, settingsAtom } from "@/lib/atoms/settings";
+import { Background, editorStateAtom } from "@/lib/atoms/editor-state";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
 import ToolItem from "./tool-item";
@@ -17,7 +17,7 @@ import SettingsGroup from "./settings-group";
 import { backgroundStyle } from "@/lib/utils/background-style";
 
 export default function FrameSettings() {
-  const [editorState, setEditorState] = useAtom(settingsAtom);
+  const [editorState, setEditorState] = useAtom(editorStateAtom);
 
   return (
     <SettingsGroup title="Frame">
