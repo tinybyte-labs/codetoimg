@@ -1,27 +1,41 @@
 "use client";
 
 import Canvas from "@/components/canvas";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Settings, settingsAtom } from "@/lib/atoms/settings";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Preview({ initState }: { initState: Settings }) {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [settings, setSettings] = useAtom(settingsAtom);
+  const [containerHeight, setContainerHeight] = useState(0);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (isLoaded) return;
-    setSettings(initState);
-    setIsLoaded(true);
-  }, [initState, isLoaded, setSettings]);
+    const calculateHeight = () => {
+      if (!scrollRef.current) return;
+      setContainerHeight(scrollRef.current?.clientHeight ?? 0);
+    };
 
-  if (!isLoaded) {
-    return null;
-  }
+    calculateHeight();
+
+    window.addEventListener("resize", calculateHeight);
+    return () => {
+      window.removeEventListener("resize", calculateHeight);
+    };
+  }, []);
 
   return (
-    <div className="transparent-grid relative h-fit w-fit">
-      <Canvas onChange={setSettings} value={settings} />
-    </div>
+    <ScrollArea ref={scrollRef} className="flex flex-1">
+      <div
+        className="flex items-center justify-center p-16 md:py-32"
+        style={{ minHeight: containerHeight }}
+      >
+        <div className="transparent-grid relative h-fit w-fit">
+          <Canvas onChange={setSettings} value={settings} />
+        </div>
+      </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 }
