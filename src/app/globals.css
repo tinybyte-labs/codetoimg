@@ -79,9 +79,6 @@
   outline: none;
 }
 
-.cm-editor {
-  min-width: 400px;
-}
 .cm-editor .cm-scroller {
   font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono",
     "Courier New", monospace;

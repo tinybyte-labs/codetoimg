@@ -4,51 +4,16 @@ import ThemeToggleButton from "@/components/theme-toggle-button";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import {
   editorStateAtom,
   initEditorState,
   isExportingAtom,
 } from "@/lib/atoms/editor-state";
-import { themes } from "@/data/themes";
-import {
-  ExportSettings,
-  cn,
-  copyNodeAsImage,
-  downloadHtmlElement,
-  objectDiff,
-} from "@/lib/utils";
-import { LanguageName } from "@uiw/codemirror-extensions-langs";
-import { useAtom } from "jotai";
-import {
-  CodeIcon,
-  Copy,
-  Download,
-  ImageIcon,
-  LinkIcon,
-  Loader2,
-} from "lucide-react";
+import { ExportSettings, downloadHtmlElement } from "@/lib/utils";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { Download, DownloadIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { languageNames } from "@/data/language-names";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogClose,
@@ -56,7 +21,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { logEvent } from "@/lib/gtag";
@@ -64,100 +28,23 @@ import Link from "next/link";
 import FrameSettings from "./frame-settings";
 import WindowSettings from "./window-settings";
 import EditorSettings from "./editor-settings";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
 
 export default function SideBar() {
-  const [state, setSettings] = useAtom(editorStateAtom);
-  const [isExporting, setIsExporting] = useAtom(isExportingAtom);
-  const { toast } = useToast();
-  const [exportFormat, setExportFormat] = useState<"png" | "jpeg" | "svg">(
-    "png",
-  );
-  const [exportScale, setExportSclae] = useState<number>(2);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const [filename, setFilename] = useState("codetoimg");
+  const setEditorSettings = useSetAtom(editorStateAtom);
 
   const handleReset = useCallback(() => {
-    setSettings(initEditorState);
+    setEditorSettings((state) => ({
+      ...initEditorState,
+      editor: {
+        ...initEditorState.editor,
+        editors: state.editor.editors,
+      },
+    }));
     logEvent("reset_state");
-  }, [setSettings]);
-
-  const copyEmbeding = useCallback(async () => {
-    const canvas = document.getElementById("canvas");
-    const changes = objectDiff(state, initEditorState);
-    const params = new URLSearchParams(changes);
-    const src = `${window.location.origin}/embed?${params.toString()}`;
-    navigator.clipboard.writeText(
-      `<iframe src="${src}" style="width: ${
-        canvas?.clientWidth ?? 0
-      }px; height: ${
-        canvas?.clientHeight ?? 0
-      }px; border:0; transform: scale(1); overflow:hidden;" sandbox="allow-scripts allow-same-origin"></iframe>`,
-    );
-    logEvent("copy_embeding", {
-      state,
-    });
-    toast({ title: "Copied!" });
-  }, [state, toast]);
-
-  const copyPlanImage = useCallback(async () => {
-    if (isExporting) return;
-
-    const canvas = document.getElementById("canvas");
-    if (canvas) {
-      setIsExporting(true);
-      try {
-        await copyNodeAsImage(canvas);
-        logEvent("copy_image", {
-          state,
-        });
-        toast({ title: "Copied!" });
-      } catch (err: any) {
-        toast({
-          title: "Faield to copy",
-          description: err.message || "Something went wrong!",
-          variant: "destructive",
-        });
-      } finally {
-        setIsExporting(false);
-      }
-    }
-  }, [isExporting, setIsExporting, state, toast]);
-
-  const copyUrl = useCallback(() => {
-    const changes = objectDiff(state, initEditorState);
-    const params = new URLSearchParams(changes);
-    const url = `${window.location.origin}/?${params.toString()}`;
-    navigator.clipboard.writeText(url);
-    logEvent("copy_url", {
-      state,
-    });
-    toast({ title: "Copied!" });
-  }, [state, toast]);
-
-  const hadnleExport = useCallback(async () => {
-    if (isExporting) return;
-    const canvas = document.getElementById("canvas");
-    if (canvas) {
-      setIsExporting(true);
-      try {
-        const export_settings: ExportSettings = {
-          format: exportFormat,
-          scale: exportScale,
-          filename: filename || "codetoimg",
-        };
-        await downloadHtmlElement(canvas, export_settings);
-        logEvent("export", {
-          state,
-          export_settings,
-        });
-        setExportDialogOpen(false);
-      } catch (err: any) {
-        console.error(err);
-      } finally {
-        setIsExporting(false);
-      }
-    }
-  }, [exportFormat, exportScale, filename, isExporting, setIsExporting, state]);
+  }, [setEditorSettings]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -187,108 +74,177 @@ export default function SideBar() {
       </ScrollArea>
 
       <div className="flex items-center gap-2 border-t p-4">
-        <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex-1">
-              Export
-              <Download size={20} className="-mr-1 ml-2" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Export</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <fieldset className="space-y-2">
-                <Label htmlFor="filename">Filename</Label>
-                <Input
-                  id="filename"
-                  value={filename}
-                  onChange={(e) => {
-                    setFilename(e.currentTarget.value);
-                  }}
-                  placeholder="codetoimg"
-                />
-              </fieldset>
-              <fieldset className="space-y-2">
-                <Label htmlFor="export-format">Format</Label>
-                <Select
-                  value={exportFormat}
-                  onValueChange={(value) => setExportFormat(value as any)}
-                >
-                  <SelectTrigger id="export-format">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="png">PNG</SelectItem>
-                    <SelectItem value="jpeg">JPEG</SelectItem>
-                    <SelectItem value="svg">SVG</SelectItem>
-                  </SelectContent>
-                </Select>
-              </fieldset>
-              {exportFormat !== "svg" && (
-                <fieldset className="space-y-2">
-                  <Label htmlFor="export-scale">Scale</Label>
-                  <Select
-                    value={String(exportScale)}
-                    onValueChange={(value) => setExportSclae(Number(value))}
-                  >
-                    <SelectTrigger id="export-scale">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1x</SelectItem>
-                      <SelectItem value="2">2x</SelectItem>
-                      <SelectItem value="3">3x</SelectItem>
-                      <SelectItem value="4">4x</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </fieldset>
-              )}
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="secondary">Cancel</Button>
-              </DialogClose>
-              <Button onClick={hadnleExport} disabled={isExporting}>
-                {isExporting && (
-                  <Loader2 size={18} className="-ml-1 mr-2 animate-spin" />
-                )}
-                Export
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon">
-              <p className="sr-only">Copy</p>
-              <Copy size={20} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Copy to Clipboard</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={copyPlanImage}>
-                <ImageIcon size={18} className="mr-2" />
-                Image
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={copyUrl}>
-                <LinkIcon size={18} className="mr-2" />
-                URL
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={copyEmbeding}>
-                <CodeIcon size={18} className="mr-2" />
-                Embeding
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button className="flex-1" onClick={() => setExportDialogOpen(true)}>
+          Export
+          <Download size={20} className="-mr-1 ml-2" />
+        </Button>
         <Button variant="secondary" onClick={handleReset}>
           Reset
         </Button>
       </div>
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={setExportDialogOpen}
+      />
     </div>
   );
 }
+
+const ExportDialog = ({
+  open,
+  onOpenChange,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) => {
+  const editorState = useAtomValue(editorStateAtom);
+  const [isExporting, setIsExporting] = useAtom(isExportingAtom);
+  const [exportFormat, setExportFormat] =
+    useState<ExportSettings["format"]>("png");
+  const [exportScale, setExportScale] = useState<number>(2);
+  const [exportQuality, setExportQuality] = useState<number>(1);
+  const [filename, setFilename] = useState("codetoimg-snippet");
+  const canvasRef = useRef<HTMLElement | null>(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  const handleExport = useCallback(async () => {
+    if (isExporting) return;
+    if (!canvasRef.current) return;
+
+    setIsExporting(true);
+    try {
+      const export_settings: ExportSettings = {
+        format: exportFormat,
+        scale: exportScale,
+        filename: filename || "codetoimg",
+        quality: exportQuality,
+      };
+      await downloadHtmlElement(canvasRef.current, export_settings);
+      logEvent("export", {
+        state: editorState,
+        export_settings,
+      });
+      onOpenChange?.(false);
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [
+    exportFormat,
+    exportQuality,
+    exportScale,
+    filename,
+    isExporting,
+    onOpenChange,
+    setIsExporting,
+    editorState,
+  ]);
+
+  useEffect(() => {
+    canvasRef.current = document.getElementById("canvas");
+  }, []);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Export Image</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6 py-4">
+          <fieldset className="space-y-2">
+            <Label htmlFor="filename">Filename</Label>
+            <Input
+              id="filename"
+              value={filename}
+              onChange={(e) => {
+                setFilename(e.currentTarget.value);
+              }}
+              placeholder="codetoimg"
+            />
+          </fieldset>
+
+          <fieldset className="space-y-2">
+            <Label htmlFor="export-format">Format</Label>
+            <Tabs
+              value={exportFormat}
+              onValueChange={(value) => setExportFormat(value as any)}
+            >
+              <TabsList className="w-full">
+                <TabsTrigger className="flex-1" value="png">
+                  PNG
+                </TabsTrigger>
+                <TabsTrigger className="flex-1" value="jpeg">
+                  JPEG
+                </TabsTrigger>
+                <TabsTrigger className="flex-1" value="svg">
+                  SVG
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </fieldset>
+
+          {exportFormat === "jpeg" && (
+            <fieldset className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="export-quality">Quality</Label>
+                <p className="text-sm text-muted-foreground">
+                  {Math.round(exportQuality * 100)}%
+                </p>
+              </div>
+              <Slider
+                id="export-quality"
+                value={[exportQuality]}
+                onValueChange={(values) => {
+                  setExportQuality(values[0]);
+                }}
+                min={0}
+                max={1}
+                step={0.01}
+              />
+            </fieldset>
+          )}
+
+          <fieldset className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="export-scale">Scale</Label>
+              <p className="text-sm text-muted-foreground">{exportScale}x</p>
+            </div>
+            <Slider
+              id="export-scale"
+              value={[exportScale]}
+              onValueChange={(values) => {
+                setExportScale(values[0]);
+              }}
+              min={1}
+              max={4}
+              step={1}
+            />
+          </fieldset>
+
+          <div className="flex items-center justify-between gap-4">
+            <Label>Output Resolution</Label>
+            <p className="text-right text-sm text-muted-foreground">
+              {(canvasRef.current?.clientWidth ?? 0) * exportScale}x
+              {(canvasRef.current?.clientHeight ?? 0) * exportScale}
+            </p>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Cancel</Button>
+          </DialogClose>
+          <Button onClick={handleExport} disabled={isExporting}>
+            {isExporting && (
+              <Loader2 size={18} className="-ml-1 mr-2 animate-spin" />
+            )}
+            Export
+            <DownloadIcon className="-mr-1 ml-2 h-5 w-5" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

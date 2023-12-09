@@ -18,6 +18,7 @@ export default function CodeEditor({
   fontSize = 16,
   language = "javascript",
   theme = "vscode",
+  lineWrapping = false,
 }: {
   onEditorCreated?: (view: EditorView) => void;
   theme?: string;
@@ -27,6 +28,7 @@ export default function CodeEditor({
   value?: string;
   onChange?: (code: string) => void;
   readOnly?: boolean;
+  lineWrapping?: boolean;
 }) {
   const [extensions, setExtensions] = useState<Extension[]>();
   const basicSetup = useMemo(
@@ -71,9 +73,10 @@ export default function CodeEditor({
       baseExtensions,
       color,
       langs[language](),
+      ...(lineWrapping ? [EditorView.lineWrapping] : []),
       EditorView.editable.of(!readOnly),
     ]);
-  }, [language, readOnly]);
+  }, [language, lineWrapping, readOnly]);
 
   return (
     <CodeMirror

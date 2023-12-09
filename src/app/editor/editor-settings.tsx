@@ -1,5 +1,5 @@
 import { editorStateAtom } from "@/lib/atoms/editor-state";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import SettingsGroup from "./settings-group";
 import ToolItem from "./tool-item";
 import {
@@ -11,15 +11,41 @@ import {
 } from "@/components/ui/select";
 import { LanguageName } from "@uiw/codemirror-extensions-langs";
 import { languageNames } from "@/data/language-names";
-import { themes } from "@/data/themes";
 import { Switch } from "@/components/ui/switch";
+import { activeTabIndexAtom } from "@/lib/atoms/active-tab-index";
+import { Input } from "@/components/ui/input";
 
 const fontSizes = [12, 14, 16, 18, 20];
 
 export default function EditorSettings() {
   const [editorState, setEditorState] = useAtom(editorStateAtom);
+  const activeIndex = useAtomValue(activeTabIndexAtom);
+
   return (
     <SettingsGroup title="Editor">
+      <ToolItem label="Tab Name">
+        <Input
+          value={editorState.editor.editors[activeIndex].tabName}
+          onChange={(e) => {
+            setEditorState((state) => ({
+              ...state,
+              editor: {
+                ...state.editor,
+                editors: state.editor.editors.map((item, i) => {
+                  if (i === activeIndex) {
+                    return {
+                      ...item,
+                      tabName: e.currentTarget.value,
+                    };
+                  }
+                  return item;
+                }),
+              },
+            }));
+          }}
+        />
+      </ToolItem>
+
       <ToolItem label="Font Size">
         <Select
           value={`${editorState.editor.fontSize}`}

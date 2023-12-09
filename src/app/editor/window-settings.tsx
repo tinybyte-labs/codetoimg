@@ -58,17 +58,28 @@ export default function WindowSettings() {
       </ToolItem>
       {editorState.widnow.showTitleBar && (
         <>
-          <ToolItem label="Trafic Lights">
-            <Switch
-              id="show-trafic-lights"
-              checked={editorState.widnow.showTraficLights}
-              onCheckedChange={(showTraficLights) =>
+          <ToolItem label="OS">
+            <Select
+              value={editorState.widnow.type}
+              onValueChange={(value) =>
                 setEditorState((state) => ({
                   ...state,
-                  widnow: { ...state.widnow, showTraficLights },
+                  widnow: {
+                    ...state.widnow,
+                    type: value as any,
+                  },
                 }))
               }
-            />
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="macOs">Mac OS</SelectItem>
+                <SelectItem value="windows">Windows</SelectItem>
+              </SelectContent>
+            </Select>
           </ToolItem>
         </>
       )}

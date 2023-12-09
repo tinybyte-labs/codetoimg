@@ -21,6 +21,36 @@ export default function FrameSettings() {
 
   return (
     <SettingsGroup title="Frame">
+      <ToolItem label="Width">
+        <Input
+          value={editorState.frame.width}
+          onChange={(e) => {
+            setEditorState((state) => ({
+              ...state,
+              frame: {
+                ...state.frame,
+                width: e.currentTarget.value,
+              },
+            }));
+          }}
+        />
+      </ToolItem>
+
+      <ToolItem label="Height">
+        <Input
+          value={editorState.frame.height}
+          onChange={(e) => {
+            setEditorState((state) => ({
+              ...state,
+              frame: {
+                ...state.frame,
+                height: e.currentTarget.value,
+              },
+            }));
+          }}
+        />
+      </ToolItem>
+
       <ToolItem label="Padding">
         <Slider
           value={[editorState.frame.padding]}

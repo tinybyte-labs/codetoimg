@@ -2,9 +2,10 @@ import { toBlob, toJpeg, toPng, toSvg } from "html-to-image";
 import { Options } from "html-to-image/lib/types";
 
 export type ExportSettings = {
-  scale: number;
   format: "png" | "jpeg" | "svg";
+  scale?: number;
   filename?: string;
+  quality?: number;
 };
 
 const filter = (node: HTMLElement) => {
@@ -23,7 +24,6 @@ export const downloadHtmlElement = async (
   const options: Options = {
     pixelRatio: settings.scale,
     cacheBust: true,
-    quality: 1,
     filter,
   };
 
@@ -34,7 +34,7 @@ export const downloadHtmlElement = async (
     case "jpeg":
       imgUrl = await toJpeg(node, {
         ...options,
-        quality: 1,
+        quality: settings.quality,
         backgroundColor: "white",
       });
       break;

@@ -1,7 +1,7 @@
 import { gradients, shadows } from "@/constants";
 import { LanguageName } from "@uiw/codemirror-extensions-langs";
 import { atom } from "jotai";
-import { focusAtom } from "jotai-optics";
+import { getRandomId } from "../utils/getRandomId";
 
 export type BackgroundGradient = {
   type: "gradient";
@@ -16,34 +16,42 @@ export type BackgroundImage = {
   imageUrl: string;
 };
 export type Background = BackgroundColor | BackgroundGradient | BackgroundImage;
+
+export type Editor = {
+  id: string;
+  code: string;
+  language: string;
+  tabName: string;
+  weight: number;
+};
+
 export type EditorState = {
   frame: {
     background: Background;
-    width: number | "auto";
-    height: number | "auto";
+    width: string;
+    height: string;
     hidden: boolean;
     opacity: number;
     padding: number;
   };
   widnow: {
     showTitleBar: boolean;
-    showTraficLights: boolean;
     borderRadius: number;
     shadow: string;
     theme: string;
+    type: "none" | "macOs" | "windows";
   };
   editor: {
     fontSize: number;
     language: LanguageName;
     showLineNumbers: boolean;
+    editors: Editor[];
   };
-  title: string;
-  code: string;
 };
 
 export const EXAMPLE_CODE = `import { useState } from "react"
 
-const Component = () => {
+const Counter = () => {
   const [count, setCount] = useState(0);
   
   return (
@@ -71,26 +79,26 @@ export const initEditorState: EditorState = {
   widnow: {
     borderRadius: 16,
     showTitleBar: true,
-    showTraficLights: true,
     shadow: shadows[1].value,
     theme: "tokyoNight",
+    type: "macOs",
   },
   editor: {
     fontSize: 16,
-    language: "jsx",
+    language: "tsx",
     showLineNumbers: false,
+    editors: [
+      {
+        id: getRandomId(),
+        code: EXAMPLE_CODE,
+        tabName: "Counter.tsx",
+        weight: 0,
+        language: "tsx",
+      },
+    ],
   },
-  code: EXAMPLE_CODE,
-  title: "Untitled-01",
 };
 
 export const editorStateAtom = atom<EditorState>(initEditorState);
-
-export const codeAtom = focusAtom(editorStateAtom, (optic) =>
-  optic.prop("code"),
-);
-export const titleAtom = focusAtom(editorStateAtom, (optic) =>
-  optic.prop("title"),
-);
 
 export const isExportingAtom = atom(false);
