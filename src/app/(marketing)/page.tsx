@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const title = "Create and Share Stunning Images of your Code";
 const description =
-  "Revamp your code into stunning images. Customize background, themes, and more. Export as an image, share a link, or embed in HTML.";
+  "Transform your code into visually captivating images with our powerful tool. Personalize the background, choose themes, toggle the title bar, add branding, and explore various features.";
 
 export const metadata: Metadata = {
   title,
