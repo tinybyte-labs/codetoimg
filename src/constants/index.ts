@@ -59,18 +59,18 @@ export const colors: string[] = [
 ];
 
 export const images = [
-  "/images/wallpapers/wallpaper-01.png",
-  "/images/wallpapers/wallpaper-02.png",
-  "/images/wallpapers/wallpaper-03.png",
-  "/images/wallpapers/wallpaper-04.png",
-  "/images/wallpapers/wallpaper-05.png",
-  "/images/wallpapers/wallpaper-06.png",
-  "/images/wallpapers/wallpaper-07.png",
-  "/images/wallpapers/wallpaper-08.png",
-  "/images/wallpapers/wallpaper-09.png",
-  "/images/wallpapers/wallpaper-10.png",
-  "/images/wallpapers/wallpaper-11.png",
-  "/images/wallpapers/wallpaper-12.png",
+  "/images/backgrounds/background-01.png",
+  "/images/backgrounds/background-02.png",
+  "/images/backgrounds/background-03.png",
+  "/images/backgrounds/background-04.png",
+  "/images/backgrounds/background-05.png",
+  "/images/backgrounds/background-06.png",
+  "/images/backgrounds/background-07.png",
+  "/images/backgrounds/background-08.png",
+  "/images/backgrounds/background-09.png",
+  "/images/backgrounds/background-10.png",
+  "/images/backgrounds/background-11.png",
+  "/images/backgrounds/background-12.png",
 ].map((imageUrl) => `${BASE_URL}${imageUrl}`);
 
 export const shadows: { label: string; value: string }[] = [

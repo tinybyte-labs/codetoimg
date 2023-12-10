@@ -30,6 +30,8 @@ import WindowSettings from "./window-settings";
 import EditorSettings from "./editor-settings";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
+import BrandingSettings from "./branding-settings";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SideBar() {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -69,6 +71,7 @@ export default function SideBar() {
           <FrameSettings />
           <WindowSettings />
           <EditorSettings />
+          <BrandingSettings />
         </div>
         <ScrollBar orientation="vertical" />
       </ScrollArea>
@@ -105,7 +108,7 @@ const ExportDialog = ({
   const [exportQuality, setExportQuality] = useState<number>(1);
   const [filename, setFilename] = useState("codetoimg-snippet");
   const canvasRef = useRef<HTMLElement | null>(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const { toast } = useToast();
 
   const handleExport = useCallback(async () => {
     if (isExporting) return;
@@ -126,19 +129,25 @@ const ExportDialog = ({
       });
       onOpenChange?.(false);
     } catch (err: any) {
-      console.error(err);
+      console.log(err);
+      toast({
+        title: "Failed to export",
+        description: err.message ?? "Something went wrong!",
+        variant: "destructive",
+      });
     } finally {
       setIsExporting(false);
     }
   }, [
+    isExporting,
+    setIsExporting,
     exportFormat,
-    exportQuality,
     exportScale,
     filename,
-    isExporting,
-    onOpenChange,
-    setIsExporting,
+    exportQuality,
     editorState,
+    onOpenChange,
+    toast,
   ]);
 
   useEffect(() => {

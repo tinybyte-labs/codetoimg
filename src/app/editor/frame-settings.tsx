@@ -15,6 +15,7 @@ import { useAtom } from "jotai";
 import ToolItem from "./tool-item";
 import SettingsGroup from "./settings-group";
 import { backgroundStyle } from "@/lib/utils/background-style";
+import { Label } from "@/components/ui/label";
 
 export default function FrameSettings() {
   const [editorState, setEditorState] = useAtom(appStateAtom);
@@ -63,7 +64,7 @@ export default function FrameSettings() {
               },
             }))
           }
-          min={0}
+          min={32}
           max={128}
           step={1}
         />
@@ -260,18 +261,21 @@ const ImagePicker = ({
 }) => {
   return (
     <div className="pt-4">
-      <Input
-        placeholder="Enter a valid image URL"
-        value={value.type === "image" ? value.imageUrl : ""}
-        onChange={(e) => {
-          onValueChange?.({
-            ...value,
-            type: "image",
-            imageUrl: e.currentTarget.value,
-          });
-        }}
-        className="flex-1"
-      />
+      <fieldset className="space-y-1">
+        <Label htmlFor="image-url">Image URL</Label>
+        <Input
+          placeholder="Enter a valid image URL"
+          value={value.type === "image" ? value.imageUrl : ""}
+          onChange={(e) => {
+            onValueChange?.({
+              ...value,
+              type: "image",
+              imageUrl: e.currentTarget.value,
+            });
+          }}
+          className="flex-1"
+        />
+      </fieldset>
       <p className="my-2 text-center text-sm text-muted-foreground">OR</p>
       <div className="relative">
         <Button asChild className="w-full" variant="outline">

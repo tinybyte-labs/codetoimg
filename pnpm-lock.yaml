@@ -104,6 +104,9 @@ dependencies:
   lucide-react:
     specifier: ^0.294.0
     version: 0.294.0(react@18.2.0)
+  modern-screenshot:
+    specifier: ^4.4.36
+    version: 4.4.36
   nanoid:
     specifier: ^5.0.4
     version: 5.0.4
@@ -3565,6 +3568,10 @@ packages:
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: true
+
+  /modern-screenshot@4.4.36:
+    resolution: {integrity: sha512-Trz71g4sE+a0m408BTYem9KhbQTHKc4WvLKqPh0oOvr5PLTqvfnIO/r2nhjRH0qn34+hfBtKxjpK/l9Ylsv00g==}
+    dev: false
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}

@@ -1,5 +1,4 @@
-import { toBlob, toJpeg, toPng, toSvg } from "html-to-image";
-import { Options } from "html-to-image/lib/types";
+import { domToPng, domToJpeg, domToSvg, Options } from "modern-screenshot";
 
 export type ExportSettings = {
   format: "png" | "jpeg" | "svg";
@@ -8,10 +7,10 @@ export type ExportSettings = {
   quality?: number;
 };
 
-const filter = (node: HTMLElement) => {
+const filter = (node: any) => {
   const exclusionClasses = ["remove-me", "secret-div"];
   return !exclusionClasses.some(
-    (classname) => node.classList?.contains(classname),
+    (classname) => node?.classList?.contains(classname),
   );
 };
 
@@ -22,24 +21,23 @@ export const downloadHtmlElement = async (
   let imgUrl: string | undefined;
 
   const options: Options = {
-    pixelRatio: settings.scale,
-    cacheBust: true,
+    scale: settings.scale,
     filter,
   };
 
   switch (settings.format) {
     case "png":
-      imgUrl = await toPng(node, options);
+      imgUrl = await domToPng(node, options);
       break;
     case "jpeg":
-      imgUrl = await toJpeg(node, {
+      imgUrl = await domToJpeg(node, {
         ...options,
         quality: settings.quality,
         backgroundColor: "white",
       });
       break;
     case "svg":
-      imgUrl = await toSvg(node, options);
+      imgUrl = await domToSvg(node, options);
       break;
     default:
       break;
@@ -62,16 +60,16 @@ export const downloadHtmlElement = async (
   }
 };
 
-export const copyNodeAsImage = async (node: HTMLElement, scale = 2) => {
-  const options: Options = {
-    pixelRatio: scale,
-    cacheBust: true,
-    quality: 1,
-    filter,
-  };
-  const blob = await toBlob(node, options);
+// export const copyNodeAsImage = async (node: HTMLElement, scale = 2) => {
+//   const options: Options = {
+//     pixelRatio: scale,
+//     cacheBust: true,
+//     quality: 1,
+//     filter,
+//   };
+//   const blob = await toBlob(node, options);
 
-  if (blob) {
-    navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-  }
-};
+//   if (blob) {
+//     navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+//   }
+// };

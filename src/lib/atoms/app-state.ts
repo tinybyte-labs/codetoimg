@@ -1,7 +1,7 @@
-import { gradients, shadows } from "@/constants";
+import { BASE_URL, gradients, shadows } from "@/constants";
 import { atom } from "jotai";
 import { getRandomId } from "../utils/getRandomId";
-import { z } from "zod";
+import {  z } from "zod";
 
 export const backgroundSchema = z.union([
   z.object({
@@ -51,6 +51,13 @@ export const windowSchema = z.object({
 
 export type Window = z.infer<typeof windowSchema>;
 
+export const brandingSchema = z.object({
+  visible: z.boolean().default(false),
+  avatarUrl: z.string().default(""),
+  name: z.string().default("CodeToImg"),
+  twitterHandle: z.string().default("codetoimg"),
+});
+
 export const editorSchema = z.object({
   fontSize: z.number().min(12).max(32).default(16),
   showLineNumbers: z.boolean().default(false),
@@ -61,6 +68,7 @@ export const appStateSchema = z.object({
   frame: frameSchema,
   window: windowSchema,
   editor: editorSchema,
+  branding: brandingSchema,
 });
 
 export type AppState = z.infer<typeof appStateSchema>;
@@ -111,6 +119,12 @@ export const initEditorState: AppState = {
         language: "tsx",
       },
     ],
+  },
+  branding: {
+    visible: false,
+    avatarUrl: `${BASE_URL}/images/codetoimg-avatar.png`,
+    name: "CodeToImg",
+    twitterHandle: "codetoimg",
   },
 };
 
