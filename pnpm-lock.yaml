@@ -92,9 +92,6 @@ dependencies:
   deepmerge:
     specifier: ^4.3.1
     version: 4.3.1
-  html-to-image:
-    specifier: ^1.11.11
-    version: 1.11.11
   jotai:
     specifier: ^2.6.0
     version: 2.6.0(@types/react@18.2.39)(react@18.2.0)
@@ -3190,10 +3187,6 @@ packages:
   /hsl-matcher@1.2.4:
     resolution: {integrity: sha512-tS7XnJS33Egirm+6cI+Z/kH/aVZt94uxGlJxOZlGql2/yqbAzPg3zHHnTnVN4cVpoJnEYEGq+LE3iXbuUIe8BA==}
     engines: {node: '>=16.0.0'}
-    dev: false
-
-  /html-to-image@1.11.11:
-    resolution: {integrity: sha512-9gux8QhvjRO/erSnDPv28noDZcPZmYE7e1vFsBLKLlRlKDSqNJYebj6Qz1TGd5lsRV+X+xYyjCKjuZdABinWjA==}
     dev: false
 
   /ignore@5.3.0:
