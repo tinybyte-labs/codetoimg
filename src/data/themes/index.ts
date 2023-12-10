@@ -7,7 +7,7 @@ import { githubDark, githubLight } from "./github";
 import { tokyoNight } from "./tokyo-night";
 import { tokyoNightStorm } from "./tokyo-night-storm";
 import { EditorTheme } from "@/lib/types/editor-theme";
-import { vscode } from "./vscode";
+import { vsCode } from "./vs-code";
 import { xCodeDark, xCodeLight } from "./xcode";
 import { solarizedLight } from "./solarizedLight";
 import { coolGlow } from "./coolGlow";
@@ -29,7 +29,7 @@ export const themes: Record<string, EditorTheme> = {
   duotoneDark,
   githubLight,
   githubDark,
-  vscode,
+  vsCode,
   xCodeLight,
   xCodeDark,
   barf,

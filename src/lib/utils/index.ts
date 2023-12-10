@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { EditorState, initEditorState } from "../atoms/editor-state";
 
 export * from "./converter";
 
@@ -35,51 +34,3 @@ export function objectDiff(object: any, compareWith: any) {
 
   return diff;
 }
-
-export const getSettings = (params: any) => {
-  const settings: EditorState = {
-    ...initEditorState,
-    ...params,
-  };
-  if (params.padding) {
-    settings.padding = Number(params.padding);
-  }
-  if (params.borderRadius) {
-    settings.borderRadius = Number(params.borderRadius);
-  }
-  if (params.borderRadius) {
-    settings.borderRadius = Number(params.borderRadius);
-  }
-  if (params.fontSize) {
-    settings.fontSize = Number(params.fontSize);
-  }
-  if (params.shadowOpacity) {
-    settings.shadowOpacity = Number(params.shadowOpacity);
-  }
-  if (params.shadowBlur) {
-    settings.shadowBlur = Number(params.shadowBlur);
-  }
-  if (params.shadowSpread) {
-    settings.shadowSpread = Number(params.shadowSpread);
-  }
-  if (params.shadowX) {
-    settings.shadowX = Number(params.shadowX);
-  }
-  if (params.shadowY) {
-    settings.shadowY = Number(params.shadowY);
-  }
-  if (params.backgroundBlur) {
-    settings.backgroundBlur = params.backgroundBlur === "true";
-  }
-  if (params.showLineNumbers) {
-    settings.showLineNumbers = params.showLineNumbers === "true";
-  }
-  if (params.showTraficLights) {
-    settings.showTraficLights = params.showTraficLights === "true";
-  }
-  if (params.showTitleBar) {
-    settings.showTitleBar = params.showTitleBar === "true";
-  }
-
-  return settings;
-};

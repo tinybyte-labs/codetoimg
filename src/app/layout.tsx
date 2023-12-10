@@ -8,11 +8,11 @@ import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "Code To Image";
+const title = "CodeToImg";
 const description = `CodeToImg is a beautifully designed application that helps you generate beautiful and customizable images of your code snippets. This is built for the developer by the developer. If you want to share your code with anyone or on any social media this is the application you need.`;
-const url = "https://codetoimg.com";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://codetoimg.com"),
   title,
   description,
   keywords:
@@ -22,13 +22,13 @@ export const metadata: Metadata = {
     creator: "@codetoimg",
     description,
     title,
-    images: `${url}/images/og-image.png`,
+    images: `/images/og-image.png`,
   },
   openGraph: {
     title,
     description,
     type: "website",
-    images: `${url}/images/og-image.png`,
+    images: `/images/og-image.png`,
   },
   robots: "index, follow",
 };

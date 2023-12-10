@@ -1,4 +1,4 @@
-import { editorStateAtom } from "@/lib/atoms/editor-state";
+import { appStateAtom } from "@/lib/atoms/app-state";
 import { useAtom, useAtomValue } from "jotai";
 import SettingsGroup from "./settings-group";
 import ToolItem from "./tool-item";
@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LanguageName } from "@uiw/codemirror-extensions-langs";
 import { languageNames } from "@/data/language-names";
 import { Switch } from "@/components/ui/switch";
 import { activeTabIndexAtom } from "@/lib/atoms/active-tab-index";
@@ -18,31 +17,20 @@ import { Input } from "@/components/ui/input";
 const fontSizes = [12, 14, 16, 18, 20];
 
 export default function EditorSettings() {
-  const [editorState, setEditorState] = useAtom(editorStateAtom);
+  const [editorState, setEditorState] = useAtom(appStateAtom);
   const activeIndex = useAtomValue(activeTabIndexAtom);
 
   return (
     <SettingsGroup title="Editor">
-      <ToolItem label="Tab Name">
-        <Input
-          value={editorState.editor.editors[activeIndex].tabName}
-          onChange={(e) => {
+      <ToolItem label="Line Numbers">
+        <Switch
+          checked={editorState.editor.showLineNumbers}
+          onCheckedChange={(showLineNumbers) =>
             setEditorState((state) => ({
               ...state,
-              editor: {
-                ...state.editor,
-                editors: state.editor.editors.map((item, i) => {
-                  if (i === activeIndex) {
-                    return {
-                      ...item,
-                      tabName: e.currentTarget.value,
-                    };
-                  }
-                  return item;
-                }),
-              },
-            }));
-          }}
+              editor: { ...state.editor, showLineNumbers },
+            }))
+          }
         />
       </ToolItem>
 
@@ -69,13 +57,47 @@ export default function EditorSettings() {
         </Select>
       </ToolItem>
 
-      <ToolItem label="Language">
-        <Select
-          value={editorState.editor.language}
-          onValueChange={(language: LanguageName) =>
+      <ToolItem label="Tab Name">
+        <Input
+          value={editorState.editor.tabs[activeIndex].tabName}
+          onChange={(e) => {
             setEditorState((state) => ({
               ...state,
-              editor: { ...state.editor, language },
+              editor: {
+                ...state.editor,
+                tabs: state.editor.tabs.map((item, i) => {
+                  if (i === activeIndex) {
+                    return {
+                      ...item,
+                      tabName: e.currentTarget.value,
+                    };
+                  }
+                  return item;
+                }),
+              },
+            }));
+          }}
+        />
+      </ToolItem>
+
+      <ToolItem label="Language">
+        <Select
+          value={editorState.editor.tabs[activeIndex].language}
+          onValueChange={(language) =>
+            setEditorState((state) => ({
+              ...state,
+              editor: {
+                ...state.editor,
+                tabs: state.editor.tabs.map((item, i) => {
+                  if (i === activeIndex) {
+                    return {
+                      ...item,
+                      language: language,
+                    };
+                  }
+                  return item;
+                }),
+              },
             }))
           }
         >
@@ -92,18 +114,6 @@ export default function EditorSettings() {
               ))}
           </SelectContent>
         </Select>
-      </ToolItem>
-
-      <ToolItem label="Line Numbers">
-        <Switch
-          checked={editorState.editor.showLineNumbers}
-          onCheckedChange={(showLineNumbers) =>
-            setEditorState((state) => ({
-              ...state,
-              editor: { ...state.editor, showLineNumbers },
-            }))
-          }
-        />
       </ToolItem>
     </SettingsGroup>
   );

@@ -4,10 +4,10 @@ import ThemeToggleButton from "@/components/theme-toggle-button";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  editorStateAtom,
+  appStateAtom,
   initEditorState,
   isExportingAtom,
-} from "@/lib/atoms/editor-state";
+} from "@/lib/atoms/app-state";
 import { ExportSettings, downloadHtmlElement } from "@/lib/utils";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { Download, DownloadIcon, Loader2 } from "lucide-react";
@@ -33,14 +33,14 @@ import { Slider } from "@/components/ui/slider";
 
 export default function SideBar() {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
-  const setEditorSettings = useSetAtom(editorStateAtom);
+  const setEditorSettings = useSetAtom(appStateAtom);
 
   const handleReset = useCallback(() => {
     setEditorSettings((state) => ({
       ...initEditorState,
       editor: {
         ...initEditorState.editor,
-        editors: state.editor.editors,
+        tabs: state.editor.tabs,
       },
     }));
     logEvent("reset_state");
@@ -97,7 +97,7 @@ const ExportDialog = ({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }) => {
-  const editorState = useAtomValue(editorStateAtom);
+  const editorState = useAtomValue(appStateAtom);
   const [isExporting, setIsExporting] = useAtom(isExportingAtom);
   const [exportFormat, setExportFormat] =
     useState<ExportSettings["format"]>("png");

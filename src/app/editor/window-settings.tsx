@@ -2,7 +2,7 @@ import SettingsGroup from "./settings-group";
 import ToolItem from "./tool-item";
 import { Switch } from "@/components/ui/switch";
 import { useAtom } from "jotai";
-import { editorStateAtom } from "@/lib/atoms/editor-state";
+import { appStateAtom } from "@/lib/atoms/app-state";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -15,17 +15,17 @@ import { shadows } from "@/constants";
 import { themes } from "@/data/themes";
 
 export default function WindowSettings() {
-  const [editorState, setEditorState] = useAtom(editorStateAtom);
+  const [editorState, setEditorState] = useAtom(appStateAtom);
 
   return (
     <SettingsGroup title="Window">
       <ToolItem label="Theme">
         <Select
-          value={editorState.widnow.theme}
+          value={editorState.window.theme}
           onValueChange={(theme) =>
             setEditorState((state) => ({
               ...state,
-              widnow: { ...state.widnow, theme },
+              window: { ...state.window, theme },
             }))
           }
         >
@@ -46,26 +46,37 @@ export default function WindowSettings() {
 
       <ToolItem label="Title Bar">
         <Switch
-          id="show-trafic-lights"
-          checked={editorState.widnow.showTitleBar}
+          checked={editorState.window.showTitleBar}
           onCheckedChange={(showTitleBar) =>
             setEditorState((state) => ({
               ...state,
-              widnow: { ...state.widnow, showTitleBar },
+              window: { ...state.window, showTitleBar },
             }))
           }
         />
       </ToolItem>
-      {editorState.widnow.showTitleBar && (
+      {editorState.window.showTitleBar && (
         <>
+          <ToolItem label="Tabs">
+            <Switch
+              checked={editorState.window.showTabs}
+              onCheckedChange={(showTabs) =>
+                setEditorState((state) => ({
+                  ...state,
+                  window: { ...state.window, showTabs },
+                }))
+              }
+            />
+          </ToolItem>
+
           <ToolItem label="OS">
             <Select
-              value={editorState.widnow.type}
+              value={editorState.window.type}
               onValueChange={(value) =>
                 setEditorState((state) => ({
                   ...state,
-                  widnow: {
-                    ...state.widnow,
+                  window: {
+                    ...state.window,
                     type: value as any,
                   },
                 }))
@@ -85,12 +96,12 @@ export default function WindowSettings() {
       )}
       <ToolItem label="Roundness">
         <Slider
-          value={[editorState.widnow.borderRadius]}
+          value={[editorState.window.borderRadius]}
           onValueChange={(values) =>
             setEditorState((state) => ({
               ...state,
-              widnow: {
-                ...state.widnow,
+              window: {
+                ...state.window,
                 borderRadius: values[0],
               },
             }))
@@ -102,11 +113,11 @@ export default function WindowSettings() {
       </ToolItem>
       <ToolItem label="Shadow">
         <Select
-          value={editorState.widnow.shadow}
+          value={editorState.window.shadow}
           onValueChange={(shadow) =>
             setEditorState((state) => ({
               ...state,
-              widnow: { ...state.widnow, shadow },
+              window: { ...state.window, shadow },
             }))
           }
         >

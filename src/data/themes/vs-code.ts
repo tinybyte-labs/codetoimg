@@ -1,7 +1,7 @@
 import { EditorTheme } from "@/lib/types/editor-theme";
 import { tags as t } from "@lezer/highlight";
 
-export const vscode: EditorTheme = {
+export const vsCode: EditorTheme = {
   name: "VS Code",
   options: {
     theme: "dark",

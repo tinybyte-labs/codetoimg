@@ -1,4 +1,4 @@
-import { Background } from "../atoms/editor-state";
+import { Background } from "../atoms/app-state";
 
 export const backgroundStyle = (background: Background) =>
   background.type === "color"
