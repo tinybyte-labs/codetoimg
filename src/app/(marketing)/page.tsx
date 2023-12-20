@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 const title = "Create and Share Stunning Images of your Code";
 const description =
@@ -24,7 +25,7 @@ export default function HomePage() {
           </p>
           <div className="mt-12 flex items-center justify-center gap-6">
             <Button asChild size="lg" className="h-14 text-lg font-semibold">
-              <a href="/editor">Get Started</a>
+              <Link href="/editor">Get Started</Link>
             </Button>
           </div>
         </div>
