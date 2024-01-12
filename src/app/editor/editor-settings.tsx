@@ -1,6 +1,5 @@
 import { appStateAtom } from "@/lib/atoms/app-state";
 import { useAtom, useAtomValue } from "jotai";
-import SettingsGroup from "./settings-group";
 import ToolItem from "./tool-item";
 import {
   Select,
@@ -13,6 +12,7 @@ import { languageNames } from "@/data/language-names";
 import { Switch } from "@/components/ui/switch";
 import { activeTabIndexAtom } from "@/lib/atoms/active-tab-index";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const fontSizes = [12, 14, 16, 18, 20];
 
@@ -21,9 +21,11 @@ export default function EditorSettings() {
   const activeIndex = useAtomValue(activeTabIndexAtom);
 
   return (
-    <SettingsGroup title="Editor">
-      <ToolItem label="Line Numbers">
+    <div className="space-y-6 p-4">
+      <fieldset className="flex items-center justify-between gap-2">
+        <Label htmlFor="show-line-numbers">Line Numbers</Label>
         <Switch
+          id="show-line-numbers"
           checked={editorState.editor.showLineNumbers}
           onCheckedChange={(showLineNumbers) =>
             setEditorState((state) => ({
@@ -32,9 +34,10 @@ export default function EditorSettings() {
             }))
           }
         />
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Font Size">
+      <fieldset className="space-y-2">
+        <Label htmlFor="font-size">Font Size</Label>
         <Select
           value={`${editorState.editor.fontSize}`}
           onValueChange={(value) =>
@@ -44,7 +47,7 @@ export default function EditorSettings() {
             }))
           }
         >
-          <SelectTrigger>
+          <SelectTrigger id="font-size">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -55,10 +58,12 @@ export default function EditorSettings() {
             ))}
           </SelectContent>
         </Select>
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Tab Name">
+      <fieldset className="space-y-2">
+        <Label htmlFor="tab-name">Tab Name</Label>
         <Input
+          id="tab-name"
           value={editorState.editor.tabs[activeIndex].tabName}
           onChange={(e) => {
             setEditorState((state) => ({
@@ -78,9 +83,10 @@ export default function EditorSettings() {
             }));
           }}
         />
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Language">
+      <fieldset className="space-y-2">
+        <Label htmlFor="language">Language</Label>
         <Select
           value={editorState.editor.tabs[activeIndex].language}
           onValueChange={(language) =>
@@ -101,7 +107,7 @@ export default function EditorSettings() {
             }))
           }
         >
-          <SelectTrigger>
+          <SelectTrigger id="language">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -114,7 +120,7 @@ export default function EditorSettings() {
               ))}
           </SelectContent>
         </Select>
-      </ToolItem>
-    </SettingsGroup>
+      </fieldset>
+    </div>
   );
 }

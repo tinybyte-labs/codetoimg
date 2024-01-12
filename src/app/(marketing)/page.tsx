@@ -8,7 +8,7 @@ const description =
   "Transform your code into visually captivating images with our powerful tool. Personalize the background, choose themes, toggle the title bar, add branding, and explore various features.";
 
 export const metadata: Metadata = {
-  title,
+  title: `CodeToImg | ${title}`,
   description,
 };
 

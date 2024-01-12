@@ -8,12 +8,12 @@ import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "CodeToImg";
+const title = "Create and Share Stunning Images of your Code";
 const description = `CodeToImg is a beautifully designed application that helps you generate beautiful and customizable images of your code snippets. This is built for the developer by the developer. If you want to share your code with anyone or on any social media this is the application you need.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://codetoimg.com"),
-  title,
+  title: `CodeToImg | ${title}`,
   description,
   keywords:
     "codetoimg, codeimg, image, code, developer, developer tool, image generator, code snippets, snippets, code to image, converter, image converter, convert code to images, code to img, code image, snapshot, code snapshot, codeblock",

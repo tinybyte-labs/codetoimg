@@ -26,7 +26,7 @@ export default function Preview() {
   }, []);
 
   return (
-    <ScrollArea ref={scrollRef} className="flex flex-1">
+    <ScrollArea ref={scrollRef} className="polka flex flex-1">
       <div
         className="flex items-center justify-center p-16 md:py-32"
         style={{ minHeight: containerHeight }}

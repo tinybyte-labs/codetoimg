@@ -84,12 +84,11 @@
     "Courier New", monospace;
 }
 .polka {
-  background-image: radial-gradient(#e2e8f0 0.7px, #fff 1px);
-  background-size: 14px 14px;
-}
-
-.dark .polka {
-  background-image: radial-gradient(#1e293b 0.7px, #020817 1px);
+  background-image: radial-gradient(
+    hsl(var(--border)) 1px,
+    hsl(var(--background)) 1px
+  );
+  background-size: 12px 12px;
 }
 
 .transparent-grid {

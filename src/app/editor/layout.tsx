@@ -8,6 +8,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeProvider from "@/components/theme-provider";
 import { useAtom } from "jotai";
 import { appStateAtom, appStateSchema } from "@/lib/atoms/app-state";
+import Link from "next/link";
+import Image from "next/image";
+import ThemeToggleButton from "@/components/theme-toggle-button";
+import NavBar from "./nav-bar";
 
 export default function EditorLayout({ children }: { children: ReactNode }) {
   const [domLoaded, setDomLoaded] = useState(false);
@@ -40,23 +44,14 @@ export default function EditorLayout({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       {domLoaded ? (
-        <div className="polka flex h-screen w-screen flex-col overflow-hidden bg-background md:flex-row">
-          <div className="flex h-full w-80 flex-shrink-0 border-r bg-card max-md:hidden">
-            <SideBar />
+        <div className="flex h-screen w-screen flex-col overflow-hidden">
+          <NavBar />
+          <div className="flex flex-1 overflow-hidden">
+            <div className="flex h-full border-r bg-card max-md:hidden">
+              <SideBar />
+            </div>
+            <div className="flex flex-1 overflow-hidden">{children}</div>
           </div>
-          <div className="flex p-4 md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button size="icon" variant="outline">
-                  <Menu size={20} />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="flex w-80 p-0">
-                <SideBar />
-              </SheetContent>
-            </Sheet>
-          </div>
-          {children}
         </div>
       ) : (
         <div className="flex h-screen w-screen items-center justify-center overflow-hidden">

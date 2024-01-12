@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +17,11 @@ const themes = [
   { value: "dark", label: "Dark", icon: <Moon size={24} /> },
 ];
 
-export default function ThemeToggleButton() {
+export default function ThemeToggleButton({
+  className,
+}: {
+  className?: string;
+}) {
   const { theme, setTheme } = useTheme();
   const selectedTheme = useMemo(
     () => themes.find((t) => t.value === theme),
@@ -35,27 +38,22 @@ export default function ThemeToggleButton() {
   }
 
   return (
-    <Tooltip>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <TooltipTrigger asChild>
-            <Button size="icon" variant="outline">
-              {selectedTheme?.icon}
-              <p className="sr-only">Change Theme</p>
-            </Button>
-          </TooltipTrigger>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-            {themes.map((item) => (
-              <DropdownMenuRadioItem key={item.value} value={item.value}>
-                {item.label}
-              </DropdownMenuRadioItem>
-            ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <TooltipContent>Change Theme</TooltipContent>
-    </Tooltip>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="icon" variant="outline" className={className}>
+          {selectedTheme?.icon}
+          <p className="sr-only">Change Theme</p>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+          {themes.map((item) => (
+            <DropdownMenuRadioItem key={item.value} value={item.value}>
+              {item.label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

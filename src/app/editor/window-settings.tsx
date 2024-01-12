@@ -13,89 +13,22 @@ import {
 } from "@/components/ui/select";
 import { shadows } from "@/constants";
 import { themes } from "@/data/themes";
+import { Label } from "@/components/ui/label";
 
 export default function WindowSettings() {
   const [editorState, setEditorState] = useAtom(appStateAtom);
 
   return (
-    <SettingsGroup title="Window">
-      <ToolItem label="Theme">
-        <Select
-          value={editorState.window.theme}
-          onValueChange={(theme) =>
-            setEditorState((state) => ({
-              ...state,
-              window: { ...state.window, theme },
-            }))
-          }
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(themes)
-              .sort()
-              .map((option) => (
-                <SelectItem key={option[0]} value={option[0]}>
-                  {option[1].name}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </ToolItem>
-
-      <ToolItem label="Title Bar">
-        <Switch
-          checked={editorState.window.showTitleBar}
-          onCheckedChange={(showTitleBar) =>
-            setEditorState((state) => ({
-              ...state,
-              window: { ...state.window, showTitleBar },
-            }))
-          }
-        />
-      </ToolItem>
-      {editorState.window.showTitleBar && (
-        <>
-          <ToolItem label="Tabs">
-            <Switch
-              checked={editorState.window.showTabs}
-              onCheckedChange={(showTabs) =>
-                setEditorState((state) => ({
-                  ...state,
-                  window: { ...state.window, showTabs },
-                }))
-              }
-            />
-          </ToolItem>
-
-          <ToolItem label="OS">
-            <Select
-              value={editorState.window.type}
-              onValueChange={(value) =>
-                setEditorState((state) => ({
-                  ...state,
-                  window: {
-                    ...state.window,
-                    type: value as any,
-                  },
-                }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">None</SelectItem>
-                <SelectItem value="macOs">Mac OS</SelectItem>
-                <SelectItem value="windows">Windows</SelectItem>
-              </SelectContent>
-            </Select>
-          </ToolItem>
-        </>
-      )}
-      <ToolItem label="Roundness">
+    <div className="space-y-6 p-4">
+      <fieldset className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="border-radius">Roundness</Label>
+          <p className="text-sm text-muted-foreground">
+            {editorState.window.borderRadius}px
+          </p>
+        </div>
         <Slider
+          id="border-radius"
           value={[editorState.window.borderRadius]}
           onValueChange={(values) =>
             setEditorState((state) => ({
@@ -110,8 +43,10 @@ export default function WindowSettings() {
           max={48}
           step={1}
         />
-      </ToolItem>
-      <ToolItem label="Shadow">
+      </fieldset>
+
+      <fieldset className="space-y-2">
+        <Label htmlFor="shadow">Shadow</Label>
         <Select
           value={editorState.window.shadow}
           onValueChange={(shadow) =>
@@ -121,7 +56,7 @@ export default function WindowSettings() {
             }))
           }
         >
-          <SelectTrigger>
+          <SelectTrigger id="shadow">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -132,7 +67,89 @@ export default function WindowSettings() {
             ))}
           </SelectContent>
         </Select>
-      </ToolItem>
-    </SettingsGroup>
+      </fieldset>
+
+      <fieldset className="flex items-center justify-between gap-2">
+        <Label htmlFor="show-title-bar">Title Bar</Label>
+        <Switch
+          id="show-title-bar"
+          checked={editorState.window.showTitleBar}
+          onCheckedChange={(showTitleBar) =>
+            setEditorState((state) => ({
+              ...state,
+              window: { ...state.window, showTitleBar },
+            }))
+          }
+        />
+      </fieldset>
+      {editorState.window.showTitleBar && (
+        <>
+          <fieldset className="flex items-center justify-between gap-2">
+            <Label htmlFor="show-tabs">Tabs</Label>
+            <Switch
+              id="show-tabs"
+              checked={editorState.window.showTabs}
+              onCheckedChange={(showTabs) =>
+                setEditorState((state) => ({
+                  ...state,
+                  window: { ...state.window, showTabs },
+                }))
+              }
+            />
+          </fieldset>
+
+          <fieldset className="space-y-2">
+            <Label htmlFor="os">OS</Label>
+            <Select
+              value={editorState.window.type}
+              onValueChange={(value) =>
+                setEditorState((state) => ({
+                  ...state,
+                  window: {
+                    ...state.window,
+                    type: value as any,
+                  },
+                }))
+              }
+            >
+              <SelectTrigger id="os">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="macOs">Mac OS</SelectItem>
+                <SelectItem value="windows">Windows</SelectItem>
+              </SelectContent>
+            </Select>
+          </fieldset>
+        </>
+      )}
+
+      <fieldset className="space-y-2">
+        <Label htmlFor="theme">Theme</Label>
+        <Select
+          value={editorState.window.theme}
+          onValueChange={(theme) =>
+            setEditorState((state) => ({
+              ...state,
+              window: { ...state.window, theme },
+            }))
+          }
+        >
+          <SelectTrigger id="theme">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(themes)
+              .sort()
+              .map((option) => (
+                <SelectItem key={option[0]} value={option[0]}>
+                  {option[1].name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </fieldset>
+    </div>
   );
 }

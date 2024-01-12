@@ -16,9 +16,11 @@ export default function BrandingSettings() {
   const [appState, setAppState] = useAtom(appStateAtom);
 
   return (
-    <SettingsGroup title="Branding">
-      <ToolItem label="Visible">
+    <div className="space-y-6 p-4">
+      <fieldset className="flex items-center justify-between gap-2">
+        <Label htmlFor="branding-visible">Visible</Label>
         <Switch
+          id="branding-visible"
           checked={appState.branding.visible}
           onCheckedChange={(visible) =>
             setAppState((state) => ({
@@ -27,11 +29,14 @@ export default function BrandingSettings() {
             }))
           }
         />
-      </ToolItem>
-      <ToolItem label="Avatar">
+      </fieldset>
+
+      <fieldset className="flex items-center justify-between gap-2">
+        <Label htmlFor="avatar">Avatar</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
+              id="avatar"
               variant="outline"
               size="icon"
               style={{
@@ -87,10 +92,12 @@ export default function BrandingSettings() {
             </div>
           </PopoverContent>
         </Popover>
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Name">
+      <fieldset className="space-y-2">
+        <Label htmlFor="brand-name">Name</Label>
         <Input
+          id="brand-name"
           value={appState.branding.name}
           onChange={(e) => {
             setAppState((state) => ({
@@ -99,10 +106,12 @@ export default function BrandingSettings() {
             }));
           }}
         />
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Twitter Handle">
+      <fieldset className="space-y-2">
+        <Label htmlFor="twitter-handle">Twitter Handle</Label>
         <Input
+          id="twitter-handle"
           value={appState.branding.twitterHandle}
           onChange={(e) => {
             setAppState((state) => ({
@@ -114,7 +123,7 @@ export default function BrandingSettings() {
             }));
           }}
         />
-      </ToolItem>
-    </SettingsGroup>
+      </fieldset>
+    </div>
   );
 }

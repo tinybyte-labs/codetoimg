@@ -12,8 +12,6 @@ import { colors, gradients, images } from "@/constants";
 import { Background, appStateAtom } from "@/lib/atoms/app-state";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
-import ToolItem from "./tool-item";
-import SettingsGroup from "./settings-group";
 import { backgroundStyle } from "@/lib/utils/background-style";
 import { Label } from "@/components/ui/label";
 
@@ -21,9 +19,11 @@ export default function FrameSettings() {
   const [editorState, setEditorState] = useAtom(appStateAtom);
 
   return (
-    <SettingsGroup title="Frame">
-      <ToolItem label="Width">
+    <div className="space-y-6 p-4">
+      <fieldset className="space-y-2">
+        <Label htmlFor="frame-width">Width</Label>
         <Input
+          id="frame-width"
           value={editorState.frame.width}
           onChange={(e) => {
             setEditorState((state) => ({
@@ -35,10 +35,12 @@ export default function FrameSettings() {
             }));
           }}
         />
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Height">
+      <fieldset className="space-y-2">
+        <Label htmlFor="frame-height">Height</Label>
         <Input
+          id="frame-height"
           value={editorState.frame.height}
           onChange={(e) => {
             setEditorState((state) => ({
@@ -50,10 +52,17 @@ export default function FrameSettings() {
             }));
           }}
         />
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Padding">
+      <fieldset className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="frame-padding">Padding</Label>
+          <p className="text-sm text-muted-foreground">
+            {editorState.frame.padding}px
+          </p>
+        </div>
         <Slider
+          id="frame-padding"
           value={[editorState.frame.padding]}
           onValueChange={(values) =>
             setEditorState((state) => ({
@@ -68,10 +77,12 @@ export default function FrameSettings() {
           max={128}
           step={1}
         />
-      </ToolItem>
+      </fieldset>
 
-      <ToolItem label="Visible">
+      <fieldset className="flex items-center justify-between gap-2">
+        <Label htmlFor="bg-visible">Visible</Label>
         <Switch
+          id="bg-visible"
           checked={!editorState.frame.hidden}
           onCheckedChange={(value) =>
             setEditorState((editorState) => ({
@@ -83,11 +94,12 @@ export default function FrameSettings() {
             }))
           }
         />
-      </ToolItem>
+      </fieldset>
 
       {!editorState.frame.hidden && (
         <>
-          <ToolItem label="Background">
+          <fieldset className="flex items-center justify-between gap-2">
+            <Label htmlFor="frame-background">Background</Label>
             <BackgroundPicker
               value={editorState.frame.background}
               onValueChange={(background) =>
@@ -100,10 +112,17 @@ export default function FrameSettings() {
                 }))
               }
             />
-          </ToolItem>
+          </fieldset>
 
-          <ToolItem label="Opacity">
+          <fieldset className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="frame-opacity">Opacity</Label>
+              <p className="text-sm text-muted-foreground">
+                {Math.round(editorState.frame.opacity * 100)}%
+              </p>
+            </div>
             <Slider
+              id="frame-opacity"
               value={[editorState.frame.opacity]}
               onValueChange={(values) => {
                 setEditorState((editorState) => ({
@@ -116,12 +135,12 @@ export default function FrameSettings() {
               }}
               min={0}
               max={1}
-              step={0.05}
+              step={0.01}
             />
-          </ToolItem>
+          </fieldset>
         </>
       )}
-    </SettingsGroup>
+    </div>
   );
 }
 
@@ -136,7 +155,8 @@ const BackgroundPicker = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          className="transparent-grid relative flex-1 overflow-hidden p-0"
+          id="frame-background"
+          className="transparent-grid relative w-16 overflow-hidden p-0"
           variant="outline"
         >
           <div className="absolute inset-0" style={backgroundStyle(value)} />
@@ -261,7 +281,7 @@ const ImagePicker = ({
 }) => {
   return (
     <div className="pt-4">
-      <fieldset className="space-y-1">
+      <fieldset className="space-y-2">
         <Label htmlFor="image-url">Image URL</Label>
         <Input
           placeholder="Enter a valid image URL"
