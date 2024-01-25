@@ -1,7 +1,7 @@
 import { BASE_URL, gradients, shadows } from "@/constants";
 import { atom } from "jotai";
 import { getRandomId } from "../utils/getRandomId";
-import {  z } from "zod";
+import { z } from "zod";
 
 export const backgroundSchema = z.union([
   z.object({
@@ -104,7 +104,7 @@ export const initEditorState: AppState = {
     borderRadius: 16,
     showTitleBar: true,
     showTabs: true,
-    shadow: shadows[1].value,
+    shadow: shadows[1].id,
     theme: "vsCode",
     type: "macOs",
   },

@@ -18,6 +18,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { LanguageName } from "@uiw/codemirror-extensions-langs";
+import { shadows } from "@/constants";
 
 export default function Canvas({
   value,
@@ -32,6 +33,11 @@ export default function Canvas({
 }) {
   const [activeTabIndex, setActiveTabIndex] = useAtom(activeTabIndexAtom);
   const theme = useMemo(() => themes[value.window.theme], [value.window.theme]);
+
+  const boxShadow = useMemo(
+    () => shadows.find((item) => item.id === value.window.shadow)?.boxShadow,
+    [value.window.shadow],
+  );
 
   const setTabs = useCallback(
     (tabs: Tab[]) => {
@@ -133,7 +139,7 @@ export default function Canvas({
           className="relative overflow-hidden"
           style={{
             borderRadius: value.window.borderRadius,
-            boxShadow: value.window.shadow,
+            boxShadow,
             backgroundColor: theme.options.settings.background,
           }}
         >

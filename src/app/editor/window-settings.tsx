@@ -126,8 +126,8 @@ export default function WindowSettings() {
           </SelectTrigger>
           <SelectContent>
             {shadows.map((shadow) => (
-              <SelectItem value={shadow.value} key={shadow.value}>
-                {shadow.label}
+              <SelectItem value={shadow.id} key={shadow.id}>
+                {shadow.name}
               </SelectItem>
             ))}
           </SelectContent>

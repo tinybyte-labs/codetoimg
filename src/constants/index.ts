@@ -59,35 +59,45 @@ export const colors: string[] = [
 ];
 
 export const images = [
-  "/images/backgrounds/background-01.png",
-  "/images/backgrounds/background-02.png",
-  "/images/backgrounds/background-03.png",
-  "/images/backgrounds/background-04.png",
-  "/images/backgrounds/background-05.png",
-  "/images/backgrounds/background-06.png",
-  "/images/backgrounds/background-07.png",
-  "/images/backgrounds/background-08.png",
-  "/images/backgrounds/background-09.png",
-  "/images/backgrounds/background-10.png",
-  "/images/backgrounds/background-11.png",
-  "/images/backgrounds/background-12.png",
-].map((imageUrl) => `${BASE_URL}${imageUrl}`);
+  `${BASE_URL}/images/backgrounds/background-01.png`,
+  `${BASE_URL}/images/backgrounds/background-02.png`,
+  `${BASE_URL}/images/backgrounds/background-03.png`,
+  `${BASE_URL}/images/backgrounds/background-04.png`,
+  `${BASE_URL}/images/backgrounds/background-05.png`,
+  `${BASE_URL}/images/backgrounds/background-06.png`,
+  `${BASE_URL}/images/backgrounds/background-07.png`,
+  `${BASE_URL}/images/backgrounds/background-08.png`,
+  `${BASE_URL}/images/backgrounds/background-09.png`,
+  `${BASE_URL}/images/backgrounds/background-10.png`,
+  `${BASE_URL}/images/backgrounds/background-11.png`,
+  `${BASE_URL}/images/backgrounds/background-12.png`,
+];
 
-export const shadows: { label: string; value: string }[] = [
+export type Shadow = {
+  id: string;
+  name: string;
+  boxShadow: string;
+};
+
+export const shadows: Shadow[] = [
   {
-    label: "None",
-    value: "0px 0px 0px 0px rgba(0,0,0,0)",
+    id: "none",
+    name: "None",
+    boxShadow: "0px 0px 0px 0px rgba(0,0,0,0)",
   },
   {
-    label: "Soft",
-    value: "0px 24px 32px -10px rgba(0,0,0,.25)",
+    id: "soft",
+    name: "Soft",
+    boxShadow: "hsla(217,33%,15%,.8) 0px 20px 30px -10px",
   },
   {
-    label: "Normal",
-    value: "0px 24px 32px -8px rgba(0,0,0,0.5)",
+    id: "normal",
+    name: "Normal",
+    boxShadow: "hsla(217,33%,15%,0.9) 0px 24px 34px -11px",
   },
   {
-    label: "Hard",
-    value: "0px 32px 48px -8px rgba(0,0,0,0.8)",
+    id: "hard",
+    name: "Hard",
+    boxShadow: "hsla(217,33%,15%,1) 0px 26px 36px -12px",
   },
 ];
