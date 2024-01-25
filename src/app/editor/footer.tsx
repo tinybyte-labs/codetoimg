@@ -34,6 +34,13 @@ export default function Footer() {
       >
         Twitter
       </Link>
+      <Link
+        href="https://v1.codetoimg.com"
+        target="_blank"
+        className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
+      >
+        CodeToImg v1
+      </Link>
     </footer>
   );
 }

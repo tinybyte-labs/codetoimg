@@ -38,13 +38,7 @@ export default function SideBar() {
   const setEditorSettings = useSetAtom(appStateAtom);
 
   const handleReset = useCallback(() => {
-    setEditorSettings((state) => ({
-      ...initEditorState,
-      editor: {
-        ...initEditorState.editor,
-        tabs: state.editor.tabs,
-      },
-    }));
+    setEditorSettings(initEditorState);
     logEvent("reset_state");
   }, [setEditorSettings]);
 
