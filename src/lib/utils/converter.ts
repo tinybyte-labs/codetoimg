@@ -1,4 +1,10 @@
-import { domToPng, domToJpeg, domToSvg, Options } from "modern-screenshot";
+import {
+  domToPng,
+  domToJpeg,
+  domToSvg,
+  Options,
+  domToBlob,
+} from "modern-screenshot";
 
 export type ExportSettings = {
   format: "png" | "jpeg" | "svg";
@@ -60,16 +66,14 @@ export const downloadHtmlElement = async (
   }
 };
 
-// export const copyNodeAsImage = async (node: HTMLElement, scale = 2) => {
-//   const options: Options = {
-//     pixelRatio: scale,
-//     cacheBust: true,
-//     quality: 1,
-//     filter,
-//   };
-//   const blob = await toBlob(node, options);
+export const copyNodeAsImage = async (node: HTMLElement, scale = 1) => {
+  const options: Options = {
+    scale,
+    filter,
+  };
+  const blob = await domToBlob(node, options);
 
-//   if (blob) {
-//     navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-//   }
-// };
+  if (blob) {
+    navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+  }
+};

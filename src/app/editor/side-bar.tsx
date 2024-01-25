@@ -8,20 +8,16 @@ import {
   initEditorState,
   isExportingAtom,
 } from "@/lib/atoms/app-state";
-import { ExportSettings, downloadHtmlElement } from "@/lib/utils";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { Download, DownloadIcon, Loader2 } from "lucide-react";
-import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  ExportSettings,
+  copyNodeAsImage,
+  downloadHtmlElement,
+} from "@/lib/utils";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { Check, CopyIcon, DownloadIcon, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useCallback, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { logEvent } from "@/lib/gtag";
 import Link from "next/link";
@@ -32,9 +28,13 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import BrandingSettings from "./branding-settings";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function SideBar() {
-  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const setEditorSettings = useSetAtom(appStateAtom);
 
   const handleReset = useCallback(() => {
@@ -71,29 +71,17 @@ export default function SideBar() {
       </ScrollArea>
 
       <div className="flex items-center gap-2 border-t p-4">
-        <Button className="flex-1" onClick={() => setExportDialogOpen(true)}>
-          Export
-          <Download size={20} className="-mr-1 ml-2" />
-        </Button>
+        <ExportButton />
+
         <Button variant="secondary" onClick={handleReset}>
           Reset
         </Button>
       </div>
-      <ExportDialog
-        open={exportDialogOpen}
-        onOpenChange={setExportDialogOpen}
-      />
     </div>
   );
 }
 
-const ExportDialog = ({
-  open,
-  onOpenChange,
-}: {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-}) => {
+const ExportButton = () => {
   const editorState = useAtomValue(appStateAtom);
   const [isExporting, setIsExporting] = useAtom(isExportingAtom);
   const [exportFormat, setExportFormat] =
@@ -103,6 +91,9 @@ const ExportDialog = ({
   const [filename, setFilename] = useState("codetoimg-snippet");
   const canvasRef = useRef<HTMLElement | null>(null);
   const { toast } = useToast();
+  const [isCopying, setIsCopying] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
 
   const handleExport = useCallback(async () => {
     if (isExporting) return;
@@ -121,12 +112,11 @@ const ExportDialog = ({
         state: editorState,
         export_settings,
       });
-      onOpenChange?.(false);
-    } catch (err: any) {
-      console.log(err);
+    } catch (error: any) {
+      console.log(error);
       toast({
         title: "Failed to export",
-        description: err.message ?? "Something went wrong!",
+        description: error.message ?? "Something went wrong!",
         variant: "destructive",
       });
     } finally {
@@ -140,21 +130,50 @@ const ExportDialog = ({
     filename,
     exportQuality,
     editorState,
-    onOpenChange,
     toast,
   ]);
 
-  useEffect(() => {
-    canvasRef.current = document.getElementById("canvas");
-  }, []);
+  const handleCopy = useCallback(async () => {
+    if (!canvasRef.current) return;
+    if (isExporting || isCopying || isCopied) return;
+
+    try {
+      setIsCopying(true);
+      await copyNodeAsImage(canvasRef.current, exportScale);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 1000);
+    } catch (error: any) {
+      console.log(error);
+      toast({
+        title: "Failed to export",
+        description: error.message ?? "Something went wrong!",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCopying(false);
+    }
+  }, [exportScale, isCopied, isCopying, isExporting, toast]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Export Image</DialogTitle>
-        </DialogHeader>
-
+    <Popover
+      onOpenChange={(opened) => {
+        if (opened) {
+          canvasRef.current = document.getElementById("canvas");
+          if (canvasRef.current) {
+            setCanvasSize({
+              width: canvasRef.current.clientWidth,
+              height: canvasRef.current.clientHeight,
+            });
+          }
+        }
+      }}
+    >
+      <PopoverTrigger asChild>
+        <Button className="flex-1">Export</Button>
+      </PopoverTrigger>
+      <PopoverContent side="right" sideOffset={8} align="end" className="w-80">
         <div className="space-y-6 py-4">
           <fieldset className="space-y-2">
             <Label htmlFor="filename">Filename</Label>
@@ -188,6 +207,27 @@ const ExportDialog = ({
             </Tabs>
           </fieldset>
 
+          <fieldset className="space-y-2">
+            <Label htmlFor="export-format">Scale</Label>
+
+            <Tabs
+              value={exportScale.toString()}
+              onValueChange={(value) => setExportScale(Number(value))}
+            >
+              <TabsList className="w-full">
+                {[1, 2, 3, 4].map((scale) => (
+                  <TabsTrigger
+                    key={scale}
+                    className="flex-1"
+                    value={scale.toString()}
+                  >
+                    {scale}x
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </fieldset>
+
           {exportFormat === "jpeg" && (
             <fieldset className="space-y-2">
               <div className="flex items-center justify-between">
@@ -209,45 +249,38 @@ const ExportDialog = ({
             </fieldset>
           )}
 
-          <fieldset className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="export-scale">Scale</Label>
-              <p className="text-sm text-muted-foreground">{exportScale}x</p>
-            </div>
-            <Slider
-              id="export-scale"
-              value={[exportScale]}
-              onValueChange={(values) => {
-                setExportScale(values[0]);
-              }}
-              min={1}
-              max={4}
-              step={1}
-            />
-          </fieldset>
-
           <div className="flex items-center justify-between gap-4">
             <Label>Output Resolution</Label>
             <p className="text-right text-sm text-muted-foreground">
-              {(canvasRef.current?.clientWidth ?? 0) * exportScale}x
-              {(canvasRef.current?.clientHeight ?? 0) * exportScale}
+              {canvasSize.width * exportScale}x{canvasSize.height * exportScale}
             </p>
           </div>
         </div>
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="secondary">Cancel</Button>
-          </DialogClose>
+        <div className="flex flex-col gap-3">
           <Button onClick={handleExport} disabled={isExporting}>
-            {isExporting && (
+            {isExporting ? (
               <Loader2 size={18} className="-ml-1 mr-2 animate-spin" />
+            ) : (
+              <DownloadIcon size={18} className="-ml-1 mr-2" />
             )}
-            Export
-            <DownloadIcon className="-mr-1 ml-2 h-5 w-5" />
+            Download
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <Button
+            variant="secondary"
+            onClick={handleCopy}
+            disabled={isExporting || isCopied || isCopying}
+          >
+            {isCopied ? (
+              <Check size={18} className="-ml-1 mr-2" />
+            ) : isCopying ? (
+              <Loader2 size={18} className="-ml-1 mr-2 animate-spin" />
+            ) : (
+              <CopyIcon size={18} className="-ml-1 mr-2" />
+            )}
+            {isCopied ? "Copied" : "Copy"}
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
