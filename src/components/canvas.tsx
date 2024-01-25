@@ -233,7 +233,15 @@ export default function Canvas({
                                 className="remove-me absolute right-2 top-1/2 z-10 -translate-y-1/2 opacity-50 hover:opacity-100"
                                 onClick={() => handleCloseTab(i)}
                               >
-                                <XIcon className="h-4 w-4" />
+                                <XIcon
+                                  className="h-4 w-4"
+                                  style={{
+                                    color:
+                                      theme.options.theme === "dark"
+                                        ? "#FFFFFF"
+                                        : "#000000",
+                                  }}
+                                />
                               </button>
                             )}
                           </div>
