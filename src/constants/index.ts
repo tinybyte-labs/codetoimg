@@ -1,4 +1,8 @@
 export const SITE_NAME = "CodeToImg";
+export const GITHUB_REPO = "https://github.com/tinybyte-labs/codetoimg";
+export const BUY_ME_A_COFFEE_URL = "https://www.buymeacoffee.com/rohid";
+export const TWITTER_URL = "https://twitter.com/codetoimg";
+export const TINYBYTE_LABS_URL = "https://tinybytelabs.com";
 
 export const BASE_URL =
   process.env.NODE_ENV === "production"

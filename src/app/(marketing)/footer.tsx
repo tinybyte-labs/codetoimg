@@ -1,8 +1,10 @@
+import ThemeToggleButton from "@/components/theme-toggle-button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { GITHUB_REPO, TWITTER_URL } from "@/constants";
 import { Coffee, Github, Twitter } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -35,9 +37,10 @@ export default function Footer() {
           </Link> */}
         </nav>
         <div className="flex items-center gap-6">
+          <ThemeToggleButton />
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href="https://twitter.com/codetoimg" target="_blank">
+              <Link href={TWITTER_URL} target="_blank">
                 <Twitter className="h-6 w-6 text-muted-foreground hover:text-accent-foreground" />
                 <p className="sr-only">Twitter</p>
               </Link>
@@ -46,24 +49,12 @@ export default function Footer() {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link
-                href="https://github.com/tinybyte-labs/codetoimg"
-                target="_blank"
-              >
+              <Link href={GITHUB_REPO} target="_blank">
                 <Github className="h-6 w-6 text-muted-foreground hover:text-accent-foreground" />
                 <p className="sr-only">Github</p>
               </Link>
             </TooltipTrigger>
             <TooltipContent>Github</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link href="https://www.buymeacoffee.com/rohid" target="_blank">
-                <Coffee className="h-6 w-6 text-muted-foreground hover:text-accent-foreground" />
-                <p className="sr-only">Buy me a Coffee</p>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>Buy me a Coffee</TooltipContent>
           </Tooltip>
         </div>
       </div>

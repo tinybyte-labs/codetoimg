@@ -1,5 +1,3 @@
-"use client";
-
 import ThemeToggleButton from "@/components/theme-toggle-button";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

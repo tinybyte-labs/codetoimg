@@ -6,7 +6,7 @@ export default function NavBar() {
   return (
     <header>
       <div className="container flex h-20 items-center">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/home" className="flex items-center gap-2">
           <Image
             src="/code-to-img.svg"
             alt="CodeToImg Logo"
@@ -27,7 +27,7 @@ export default function NavBar() {
             <Link href="/blog">Blog</Link>
           </Button> */}
           <Button asChild className="ml-6">
-            <Link href="/editor">Editor</Link>
+            <Link href="/">Editor</Link>
           </Button>
         </div>
       </div>

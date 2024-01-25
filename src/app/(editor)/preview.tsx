@@ -1,5 +1,3 @@
-"use client";
-
 import Canvas from "@/components/canvas";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { appStateAtom } from "@/lib/atoms/app-state";

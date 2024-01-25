@@ -1,3 +1,9 @@
+import {
+  BUY_ME_A_COFFEE_URL,
+  GITHUB_REPO,
+  TINYBYTE_LABS_URL,
+  TWITTER_URL,
+} from "@/constants";
 import Link from "next/link";
 
 export default function Footer() {
@@ -6,7 +12,7 @@ export default function Footer() {
       <p className="text-center text-muted-foreground">
         Made by{" "}
         <Link
-          href="https://tinybytelabs.com"
+          href={TINYBYTE_LABS_URL}
           target="_blank"
           className="font-medium text-foreground underline-offset-2 hover:underline"
         >
@@ -14,21 +20,21 @@ export default function Footer() {
         </Link>
       </p>
       <Link
-        href="https://www.buymeacoffee.com/rohid"
+        href={BUY_ME_A_COFFEE_URL}
         target="_blank"
         className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
       >
-        Buy Me a Coffee
+        Buy me a Coffee
       </Link>
       <Link
-        href="https://github.com/tinybyte-labs/codetoimg"
+        href={GITHUB_REPO}
         target="_blank"
         className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
       >
         Github
       </Link>
       <Link
-        href="https://twitter.com/codetoimg"
+        href={TWITTER_URL}
         target="_blank"
         className="font-medium text-muted-foreground underline-offset-2 hover:text-accent-foreground hover:underline"
       >

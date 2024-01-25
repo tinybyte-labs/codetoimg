@@ -5,10 +5,12 @@ import { cn } from "@/lib/utils";
 import Analytics from "./analytics";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
+import ThemeProvider from "@/components/theme-provider";
+import { Provider as JotaiProvider } from "jotai";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "CodeToImg";
+const title = "CodeToImg | Create and Share Stunning Images of your Code";
 const description = `CodeToImg is a beautifully designed application that helps you generate beautiful and customizable images of your code snippets. This is built for the developer by the developer. If you want to share your code with anyone or on any social media this is the application you need.`;
 
 export const metadata: Metadata = {
@@ -47,10 +49,12 @@ export default function RootLayout({
         )}
       >
         <Analytics />
-        <TooltipProvider>
-          {children}
-          <Toaster />
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <JotaiProvider>{children}</JotaiProvider>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

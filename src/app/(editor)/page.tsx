@@ -1,11 +1,5 @@
-import Footer from "./footer";
-import Preview from "./preview";
+import Editor from "./editor";
 
 export default function EditorPage() {
-  return (
-    <div className="relative flex flex-1 flex-col overflow-auto">
-      <Preview />
-      <Footer />
-    </div>
-  );
+  return <Editor />;
 }

@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { GITHUB_REPO } from "@/constants";
+import { StarIcon } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,12 +22,17 @@ export default function HomePage() {
           <h1 className="text-center text-5xl font-bold md:text-6xl">
             {title}
           </h1>
-          <p className="mt-6 text-center text-lg font-medium leading-relaxed text-muted-foreground md:text-xl md:leading-relaxed">
+          <p className="mx-auto mt-6 max-w-screen-sm text-center font-medium text-muted-foreground md:text-lg">
             {description}
           </p>
           <div className="mt-12 flex items-center justify-center gap-6">
-            <Button asChild size="lg" className="h-14 text-lg font-semibold">
-              <Link href="/editor">Get Started</Link>
+            <Button asChild size="lg">
+              <Link href="/">Get Started</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href={GITHUB_REPO} target="_blank">
+                Star on Github
+              </Link>
             </Button>
           </div>
         </div>
