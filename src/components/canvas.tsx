@@ -327,7 +327,7 @@ export default function Canvas({
 
       {value.branding.visible && (
         <div className="z-10 p-6 pt-0">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 drop-shadow-md">
             <img
               src={value.branding.avatarUrl}
               alt="avatar"
