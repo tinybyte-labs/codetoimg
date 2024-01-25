@@ -87,7 +87,7 @@ const ExportButton = () => {
   const [exportFormat, setExportFormat] =
     useState<ExportSettings["format"]>("png");
   const [exportScale, setExportScale] = useState<number>(2);
-  const [exportQuality, setExportQuality] = useState<number>(1);
+  const [exportQuality, setExportQuality] = useState<number>(0.95);
   const [filename, setFilename] = useState("codetoimg-snippet");
   const canvasRef = useRef<HTMLElement | null>(null);
   const { toast } = useToast();
