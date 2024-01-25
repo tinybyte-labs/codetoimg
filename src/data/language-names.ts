@@ -382,7 +382,7 @@ export const languageExtensions: Record<LanguageName, string[]> = {
   sql: [".sql", ".cql", ".ddl", ".inc", ".prc", ".tab", ".udf", ".viw"],
   mysql: [],
   pgsql: [],
-  java: [],
+  java: [".java"],
   rust: [".rs", ".rs.in"],
   cpp: [
     ".cpp",
