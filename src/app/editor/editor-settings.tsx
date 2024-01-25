@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { languageNames } from "@/data/language-names";
+import { languageExtensions, languageNames } from "@/data/language-names";
 import { Switch } from "@/components/ui/switch";
 import { activeTabIndexAtom } from "@/lib/atoms/active-tab-index";
 import { Input } from "@/components/ui/input";
@@ -61,6 +61,13 @@ export default function EditorSettings() {
         <Input
           value={editorState.editor.tabs[activeIndex].tabName}
           onChange={(e) => {
+            const tabName = e.currentTarget.value;
+
+            const language = Object.entries(languageExtensions).find(
+              (extensions) =>
+                extensions[1].findIndex((ext) => tabName.endsWith(ext)) !== -1,
+            );
+
             setEditorState((state) => ({
               ...state,
               editor: {
@@ -69,7 +76,8 @@ export default function EditorSettings() {
                   if (i === activeIndex) {
                     return {
                       ...item,
-                      tabName: e.currentTarget.value,
+                      tabName,
+                      language: language?.[0] ?? item.language,
                     };
                   }
                   return item;
