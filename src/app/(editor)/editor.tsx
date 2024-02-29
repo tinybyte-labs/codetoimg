@@ -36,6 +36,10 @@ export default function Editor() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showAd, setShowAd] = useState(true);
   const ad = useMemo(() => ads[randomInt(0, ads.length)], []);
+  const description = useMemo(
+    () => ad.descriptions[randomInt(0, ad.descriptions.length)],
+    [ad.descriptions],
+  );
 
   useEffect(() => {
     const editorState = localStorage.getItem("editor-state");
@@ -102,7 +106,7 @@ export default function Editor() {
             />
             <p className="mt-4 text-center text-xl font-bold">{ad.title}</p>
             <p className="mt-2 text-center text-sm leading-normal text-muted-foreground">
-              {ad.descriptions[randomInt(0, ad.descriptions.length)]}
+              {description}
             </p>
             {ad.appStoreUrl && (
               <Link href={ad.appStoreUrl} className="mt-8">
