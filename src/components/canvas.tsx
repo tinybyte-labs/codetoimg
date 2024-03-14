@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/context-menu";
 import { LanguageName } from "@uiw/codemirror-extensions-langs";
 import { shadows } from "@/constants";
+import Image from "next/image";
+import { getIconUrl } from "@/lib/icons";
 
 export default function Canvas({
   value,
@@ -159,13 +161,17 @@ export default function Canvas({
                     <>
                       {value.editor.tabs.map((editor, i) => {
                         const active = i === activeTabIndex;
+                        const iconUrl = getIconUrl(
+                          editor.language as LanguageName,
+                        );
+
                         return (
                           <div key={editor.id} className="relative">
                             <ContextMenu>
                               <ContextMenuTrigger asChild>
                                 <button
                                   className={cn(
-                                    "group relative h-full min-w-[100px] overflow-hidden rounded-md pl-3 text-sm",
+                                    "group relative flex h-full min-w-[100px] items-center gap-1 overflow-hidden rounded-md pl-3 text-sm",
                                     value.editor.tabs.length === 1
                                       ? "pr-3"
                                       : "pr-7",
@@ -186,6 +192,17 @@ export default function Canvas({
                                           : "#000000",
                                     }}
                                   />
+
+                                  {iconUrl && (
+                                    <Image
+                                      src={iconUrl}
+                                      width={64}
+                                      height={64}
+                                      alt={`Language icon for ${editor.language}`}
+                                      className="h-4 w-4 object-contain"
+                                    />
+                                  )}
+
                                   <p
                                     className={cn(
                                       "text-left leading-6",
